@@ -1,0 +1,49 @@
+name: 'SubServers'
+main: 'net.ME1312.SubServer.Load'
+version: '1.8.8f'
+authors: [ME1312]
+website: 'https://www.spigotmc.org/resources/subservers.11264/'
+commands:
+  subserver:
+    description: All SubServer Commands
+    usage: /SubServer [Server]
+  sub:
+    description: All SubServer Commands
+    usage: /Sub [Server]
+permissions:
+  subserver.*:
+    description: All Subserver Commands
+    default: op
+    children:
+      subserver.command:
+        description: Subservers GUI
+        default: op
+      subserver.command.*:
+        description: 'Subserver Commands/Actions'
+        default: op
+        children:
+          subserver.command.create:
+            description: Creates a SubServer
+            default: op
+          subserver.command.start.*:
+            description: Starts a Subserver
+            default: op
+          subserver.command.kill.*:
+            description: Terminates a Subserver
+            default: op
+          subserver.command.stop.*:
+            description: Stops a Subserver
+            default: op
+          subserver.command.send.*:
+            description: Sends Commands to a Subserver
+            default: op
+          subserver.command.teleport.*:
+            description: Teleport to SubServers
+            default: op
+            children:
+              subserver.command.teleport.others.*:
+                description: Teleport Others to SubServers
+                default: op
+          subserver.command.reload:
+            description: Reload Subservers Configs
+            default: op

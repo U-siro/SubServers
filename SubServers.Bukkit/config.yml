@@ -1,0 +1,36 @@
+# SubServer Plugin Configuration
+# This is The Main Config for this Plugin
+#
+# Where is git-bash.exe Located? Mac/Linux users can ignore this option
+Settings:
+    Server-Creation:
+        git-dir: 'C:\Program Files\Git'
+        log: true
+    config-version: 1.8.8e+
+    GUI:
+        Enabled: true
+        Trigger-Item: 'EMERALD_ORE'
+    Server-IP: '127.0.0.1'
+    Lobby-Port: 25565
+#
+# This is the settings for the proxy
+Proxy:
+    enabled: false
+    run-on-launch: true
+    dir: 'path/to/your/folder'
+    shell: './start-bungee.sh'
+    log: true
+#
+# This Is the List of your Servers
+# And their configurations
+Servers:
+    'My-Cool-Server':
+        enabled: false
+        port: 25565
+        run-on-launch: false
+        log: true
+        dir: 'path/to/your/folder'
+        shell: './start.sh'
+        stop-after: 0
+#
+# End of Config
