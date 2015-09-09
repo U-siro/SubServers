@@ -29,5 +29,5 @@ crashlytics.properties
 crashlytics-build.properties
 
 # Hide github Files
-/.gitignore
-/README.md
+.gitignore
+README.md
