@@ -1,4 +1,4 @@
 <resources>
     <resource type="font" url="http://src.ME1312.net/css/avenir-next-lt-pro.zip" />
-    <resource type="image" url="http://src.ME1312.net/Images/loading_transparent.gif" name="buffering.gif" />
+    <resource type="image" url="https://www.decaredental.ie/assets/images/wait.gif" name="buffering.gif" />
 </resources>

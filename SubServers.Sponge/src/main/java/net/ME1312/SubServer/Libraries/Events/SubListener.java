@@ -14,35 +14,35 @@ import net.ME1312.SubServer.Libraries.Events.SubEvent.SubPlayerEvent.SubRunComma
 public interface SubListener {
 	
 	/**
-	 * Called when a SubServer is Created
+	 * Called before a SubServer is Created
 	 * 
 	 * @param event The event attached to this method
 	 */
 	default void onSubServerCreate(SubCreateEvent event) { return; }
 	
 	/**
-	 * Called when a Subserver is Started
+	 * Called before a Subserver is Started
 	 * 
 	 * @param event The event attached to this method
 	 */
 	default void onSubServerStart(SubPlayerEvent event) { return; }
 	
 	/**
-	 * Called when a Subserver is Stopped/Terminated
+	 * Called before a Subserver is Stopped/Terminated
 	 * 
 	 * @param event The event attached to this method
 	 */
 	default void onSubServerStop(SubPlayerEvent event) { return; }
 	
 	/**
-	 * Called when a Subserver's Shell Exits
+	 * Called when a Subserver's Shell Exits<br /> Cancelling this method will do nothing.
 	 * 
 	 * @param event The event attached to this method
 	 */
 	default void onSubServerShellExit(SubEvent event) { return; }
 	
 	/**
-	 * Called when a Subserver Receives a Command
+	 * Called before a Subserver Receives a Command
 	 * 
 	 * @param event The event attached to this method
 	 */

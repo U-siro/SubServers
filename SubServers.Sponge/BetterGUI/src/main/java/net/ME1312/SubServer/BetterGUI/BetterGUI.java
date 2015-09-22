@@ -20,15 +20,11 @@ import java.util.*;
 public class BetterGUI implements GUIHandler, ComponentManager {
     protected boolean Loading = false;
     private Main Main;
-    private CommentedConfigurationNode lang;
     private MinecraftGuiService GUI;
-    private List<SubServer> SubServers;
 
 
-    public BetterGUI(Main Main, CommentedConfigurationNode lang, List<SubServer> SubServers, MinecraftGuiService GUI) {
+    public BetterGUI(Main Main, MinecraftGuiService GUI) {
         this.Main = Main;
-        this.lang = lang;
-        this.SubServers = SubServers;
         this.GUI = GUI;
 
         GUI.registerComponentManager(this, false);
@@ -38,6 +34,8 @@ public class BetterGUI implements GUIHandler, ComponentManager {
         if (file.exists()) {
             file.delete();
         }
+
+        CommentedConfigurationNode lang = API.getLang();
 
         PrintWriter writer = new PrintWriter(file, "UTF-8");
 
@@ -52,10 +50,12 @@ public class BetterGUI implements GUIHandler, ComponentManager {
         writer.println("}");
         writer.println();
         writer.println("root > #__window > #_loader {");
-        writer.println("    WIDTH: 100;");
-        writer.println("    HEIGHT: 100;");
+        writer.println("    WIDTH: 75;");
+        writer.println("    HEIGHT: 75;");
         writer.println("    IMAGE_TYPE: CUSTOM;");
         writer.println("    IMAGE_NAME: buffering.gif;");
+        writer.println("    Y_RELATIVE: 75;");
+        writer.println("    X_RELATIVE: 48;");
         writer.println("}");
         writer.println();
         writer.println("root > #__window > #_start,");
@@ -166,7 +166,8 @@ public class BetterGUI implements GUIHandler, ComponentManager {
         writer.println("    Y_RELATIVE: 4;");
         writer.println("}");
         writer.println();
-        writer.println("root > #__window > #__close {");
+        writer.println("root > #__window > #__close,");
+        writer.println("root > #__window > #__minimize {");
         writer.println("    FONT_SIZE: 14;");
         writer.println("    TEXT_COLOR: 0,0,0,127;");
         writer.println("    WIDTH: 32;");
@@ -175,6 +176,9 @@ public class BetterGUI implements GUIHandler, ComponentManager {
         writer.println("    X_RELATIVE: 143;");
         writer.println("}");
         writer.println();
+
+        //TODO
+
         writer.println("root > #__window > #_teleport,");
         writer.println("root > #__window > #_teleport_disabled,");
         writer.println("root > #__window > #__back,");
@@ -318,18 +322,17 @@ public class BetterGUI implements GUIHandler, ComponentManager {
         writer.close();
     }
 
-    public void ServerSelectionWindow(Player player, int page, SubServer server) {
-        ServerSelectionWindow(player, page, server, false);
+    public void ServerSelectionWindow(Player player, int page) {
+        ServerSelectionWindow(player, page, false);
     }
 
-    public void ServerSelectionWindow(Player player, int page, SubServer server, boolean remove) {
-        if (server == null || !SubServers.contains(server)) {
+    public void ServerSelectionWindow(Player player, int page, boolean remove) {
+        List<SubServer> SubServers = new ArrayList<SubServer>();
+        SubServers.addAll(API.getSubServers());
+        if (true) {
             UUID uuid = player.getUniqueId();
             int min = (page * 17);
             int max = (min + 16);
-            List<SubServer> SubServersStore = new ArrayList<SubServer>();
-            SubServersStore.add(API.getSubServer(0));
-            SubServersStore.addAll(SubServers);
 
             try {
                 if (!(new File(new File(Main.dataFolder, "cache"), "__style.css").exists())) {
@@ -351,30 +354,37 @@ public class BetterGUI implements GUIHandler, ComponentManager {
 
                 GUI.listenButton(this, "__close");
 
-                for(Iterator<SubServer> str = SubServersStore.iterator(); str.hasNext(); ) {
-                    String item = str.next().Name;
-                    if ((item == "_Proxy" && API.getSubServer(0).Enabled) || API.getSubServer(item).Enabled) {
-                        if (SubServersStore.indexOf(item) >= min && SubServersStore.indexOf(item) <= max) {
+                for (Iterator<SubServer> items = SubServers.iterator(); items.hasNext(); ) {
+                    SubServer item = items.next();
+                    if (item.Enabled) {
+                        if (SubServers.indexOf(item) >= min && SubServers.indexOf(item) <= max) {
 
                             String status;
-                            if (item != "_Proxy" && API.getSubServer(item).Temporary) {
+                            if (item.Temporary) {
                                 status = "Temporary";
-                            } else if ((item == "_Proxy" && API.getSubServer(0).isRunning()) || API.getSubServer(item).isRunning()) {
+                            } else if (item.isRunning()) {
                                 status = "Online";
                             } else {
                                 status = "Offline";
                             }
 
                             String name;
-                            if (item == "_Proxy") {
+                            if (item.PID == 0) {
                                 name = "Proxy";
                             } else {
-                                name = item;
+                                name = item.Name;
                             }
 
-                            writer.println("            <button class=\"" + status + "\" id=\"__server_" + item + "\" value=\"" + name + "\" />");
+                            String id;
+                            if (item.PID == 0) {
+                                id = "__server__Proxy";
+                            } else {
+                                id = "__server_" + item.Name;
+                            }
 
-                            GUI.listenButton(this, "__server_" + item);
+                            writer.println("            <button class=\"" + status + "\" id=\"" + id + "\" value=\"" + name + "\" />");
+
+                            GUI.listenButton(this, id);
                         }
                     }
                 }
@@ -389,13 +399,13 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 }
 
                 if (net.ME1312.SubServer.Main.ServerCreator == null || !net.ME1312.SubServer.Main.ServerCreator.isRunning()) {
-                    if ((min != 0) && (SubServersStore.size() > max)) {
+                    if ((min != 0) && (SubServers.size() > max)) {
                         writer.println("        <button id=\"__create_mid\" />");
                         GUI.listenButton(this, "__create_mid");
                     } else if ((min != 0)) {
                         writer.println("        <button id=\"__create_right\" />");
                         GUI.listenButton(this, "__create_right");
-                    } else if ((SubServersStore.size() > max)) {
+                    } else if ((SubServers.size() > max)) {
                         writer.println("        <button id=\"__create_left\" />");
                         GUI.listenButton(this, "__create_left");
                     } else {
@@ -403,13 +413,13 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                         GUI.listenButton(this, "__create_full");
                     }
                 } else {
-                    if ((min != 0) && (SubServersStore.size() > max)) {
+                    if ((min != 0) && (SubServers.size() > max)) {
                         writer.println("        <button id=\"__create_busy_mid\" />");
                         GUI.listenButton(this, "__create_busy_mid");
                     } else if ((min != 0)) {
                         writer.println("        <button id=\"__create_busy_right\" />");
                         GUI.listenButton(this, "__create_busy_right");
-                    } else if ((SubServersStore.size() > max)) {
+                    } else if ((SubServers.size() > max)) {
                         writer.println("        <button id=\"__create_busy_left\" />");
                         GUI.listenButton(this, "__create_busy_left");
                     } else {
@@ -418,7 +428,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                     }
                 }
 
-                if (SubServersStore.size() > max) {
+                if (SubServers.size() > max) {
                     writer.println("        <button id=\"__next\">");
                     writer.println("            <inputToSend id=\"__page\" />");
                     writer.println("        </button>");
@@ -435,109 +445,110 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                         CSSFactory.load(new File(new File(Main.dataFolder, "cache"), "__style.css"))));
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Main.log.error(e.getStackTrace().toString());
+                ;
             }
-        } else {
-            ServerAdminWindow(player, server, false);
         }
     }
 
-    public void ServerAdminWindow(Player player, SubServer server) {
-        ServerAdminWindow(player, server, false);
-    }
+    public void ServerAdminWindow(Player player, SubServer server) { ServerAdminWindow(player, server, false); }
 
     public void ServerAdminWindow(Player player, SubServer server, boolean remove) {
+        CommentedConfigurationNode lang = API.getLang();
         UUID uuid = player.getUniqueId();
-        try {
-            if (!(new File(new File(Main.dataFolder, "cache"), "__style.css").exists())) {
-                CreateStyleSheet(new File(new File(Main.dataFolder, "cache"), "__style.css"));
-            }
+        if (true) {
+            try {
+                if (!(new File(new File(Main.dataFolder, "cache"), "__style.css").exists())) {
+                    CreateStyleSheet(new File(new File(Main.dataFolder, "cache"), "__style.css"));
+                }
 
-            if (new File(new File(Main.dataFolder, "cache"), uuid.toString() + ".xml").exists()) {
-                new File(new File(Main.dataFolder, "cache"), uuid.toString() + ".xml").delete();
-            }
+                if (new File(new File(Main.dataFolder, "cache"), uuid.toString() + ".xml").exists()) {
+                    new File(new File(Main.dataFolder, "cache"), uuid.toString() + ".xml").delete();
+                }
 
-            PrintWriter writer = new PrintWriter(new File(new File(Main.dataFolder, "cache"), uuid.toString() + ".xml"), "UTF-8");
+                PrintWriter writer = new PrintWriter(new File(new File(Main.dataFolder, "cache"), uuid.toString() + ".xml"), "UTF-8");
 
-            writer.println("<root>");
-            writer.println("    <panel id=\"__window\">");
-            writer.println("        <paragraph id=\"__header\" value=\"" + lang.getNode("Lang", "GUI", "Server-Admin-Title").getString() + server.Name + "\" />");
-            writer.println("        <button id=\"__close\" />");
-            writer.println("        <input id=\"_server\" type=\"invisible\" value=\"" + server.PID + "\" />");
+                writer.println("<root>");
+                writer.println("    <panel id=\"__window\">");
+                writer.println("        <paragraph id=\"__header\" value=\"" + lang.getNode("Lang", "GUI", "Server-Admin-Title").getString() + server.Name + "\" />");
+                writer.println("        <button id=\"__close\" />");
+                writer.println("        <input id=\"_server\" type=\"invisible\" value=\"" + server.PID + "\" />");
 
-            GUI.listenButton(this, "__close");
+                GUI.listenButton(this, "__close");
 
-            if (!server.isRunning() && (player.hasPermission("SubServer.Command.start." + server) || !player.hasPermission("SubServer.Command.start.*"))) {
-                writer.println("        <button id=\"_start\">");
+                if (!server.isRunning()/* && (player.hasPermission("SubServer.Command.start." + server) || !player.hasPermission("SubServer.Command.start.*"))*/) { //TODO
+                    writer.println("        <button id=\"_start\">");
+                    writer.println("            <inputToSend id=\"_server\" />");
+                    writer.println("        </button>");
+
+                    GUI.listenButton(this, "_start");
+                } else if (!server.isRunning()) {
+                    writer.println("        <button id=\"_start_disabled\" />");
+                }
+
+                if (server.isRunning()/* && (player.hasPermission("SubServer.Command.stop." + server) || player.hasPermission("SubServer.Command.stop.*"))*/) { //TODO
+                    writer.println("        <button id=\"_stop\">");
+                    writer.println("            <inputToSend id=\"_server\" />");
+                    writer.println("        </button>");
+
+                    GUI.listenButton(this, "_stop");
+                } else if (server.isRunning()) {
+                    writer.println("        <button id=\"_stop_disabled\" />");
+                }
+
+                if (server.isRunning()/* && (player.hasPermission("SubServer.Command.kill." + server) || player.hasPermission("SubServer.Command.kill.*"))*/) { //TODO
+                    writer.println("        <button id=\"_kill\">");
+                    writer.println("            <inputToSend id=\"_server\" />");
+                    writer.println("        </button>");
+
+                    GUI.listenButton(this, "_kill");
+                } else if (server.isRunning()) {
+                    writer.println("        <button id=\"_kill_disabled\" />");
+                }
+
+                if (server.isRunning()/* && (player.hasPermission("SubServer.Command.send." + server) || player.hasPermission("SubServer.Command.send.*"))*/) { //TODO
+                    writer.println("        <panel id=\"_send_cmd\">");
+                    writer.println("            <input id=\"_cmd\" type=\"text\" />");
+                    writer.println("            <button id=\"_send\">");
+                    writer.println("                <inputToSend id=\"_cmd\" />");
+                    writer.println("                <inputToSend id=\"_server\" />");
+                    writer.println("            </button>");
+                    writer.println("        </panel>");
+
+                    GUI.listenButton(this, "_send");
+                } else if (server.isRunning()) {
+                    writer.println("        <button id=\"_send_cmd_disabled\" value=\"" + lang.getNode("Lang", "GUI", "Send-CMD").getString() + "\" />");
+                }
+
+                if (server.isRunning() && !server.Name.equalsIgnoreCase("~Proxy")/* && (player.hasPermission("SubServer.Command.teleport." + server) || player.hasPermission("SubServer.Command.teleport.*"))*/) { //TODO
+                    writer.println("        <button id=\"_teleport\">");
+                    writer.println("            <inputToSend id=\"_server\" />");
+                    writer.println("        </button>");
+
+                    GUI.listenButton(this, "_teleport");
+                } else {
+                    writer.println("        <button id=\"_teleport_disabled\" />");
+                }
+
+                writer.println("        <button id=\"__back\">");
                 writer.println("            <inputToSend id=\"_server\" />");
                 writer.println("        </button>");
+                writer.println("    </panel>");
+                writer.println("</root>");
 
-                GUI.listenButton(this, "_start");
-            } else if (!server.isRunning()) {
-                writer.println("        <button id=\"_start_disabled\" />");
+                writer.close();
+                GUI.listenButton(this, "__back");
+
+
+                if (remove) GUI.removeComponent(uuid.toString(), "__window");
+
+                GUI.createComponent(uuid.toString(), ComponentFactory.load(new File(new File(Main.dataFolder, "cache"), uuid.toString() + ".xml"),
+                        CSSFactory.load(new File(new File(Main.dataFolder, "cache"), "__style.css"))));
+
+            } catch (IOException e) {
+                Main.log.error(e.getStackTrace().toString());
+                ;
             }
-
-            if (server.isRunning() && (player.hasPermission("SubServer.Command.stop." + server) || player.hasPermission("SubServer.Command.stop.*"))) {
-                writer.println("        <button id=\"_stop\">");
-                writer.println("            <inputToSend id=\"_server\" />");
-                writer.println("        </button>");
-
-                GUI.listenButton(this, "_stop");
-            } else if (server.isRunning()) {
-                writer.println("        <button id=\"_stop_disabled\" />");
-            }
-
-            if (server.isRunning() && (player.hasPermission("SubServer.Command.kill." + server) || player.hasPermission("SubServer.Command.kill.*"))) {
-                writer.println("        <button id=\"_kill\">");
-                writer.println("            <inputToSend id=\"_server\" />");
-                writer.println("        </button>");
-
-                GUI.listenButton(this, "_kill");
-            } else if (server.isRunning()) {
-                writer.println("        <button id=\"_kill_disabled\" />");
-            }
-
-            if (server.isRunning() && (player.hasPermission("SubServer.Command.send." + server) || player.hasPermission("SubServer.Command.send.*"))) {
-                writer.println("        <panel id=\"_send_cmd\">");
-                writer.println("            <input id=\"_cmd\" type=\"text\" />");
-                writer.println("            <button id=\"_send\">");
-                writer.println("                <inputToSend id=\"_cmd\" />");
-                writer.println("                <inputToSend id=\"_server\" />");
-                writer.println("            </button>");
-                writer.println("        </panel>");
-
-                GUI.listenButton(this, "_send");
-            } else if (server.isRunning()) {
-                writer.println("        <button id=\"_send_cmd_disabled\" value=\"" + lang.getNode("Lang", "GUI", "Send-CMD").getString() + "\" />");
-            }
-
-            if (server.isRunning() && !server.Name.equalsIgnoreCase("~Proxy") && (player.hasPermission("SubServer.Command.teleport." + server) || player.hasPermission("SubServer.Command.teleport.*"))) {
-                writer.println("        <button id=\"_teleport\">");
-                writer.println("            <inputToSend id=\"_server\" />");
-                writer.println("        </button>");
-
-                GUI.listenButton(this, "_teleport");
-            } else {
-                writer.println("        <button id=\"_teleport_disabled\" />");
-            }
-
-            writer.println("        <button id=\"__back\">");
-            writer.println("            <inputToSend id=\"_server\" />");
-            writer.println("        </button>");
-            writer.println("    </panel>");
-            writer.println("</root>");
-
-            writer.close();
-            GUI.listenButton(this, "__back");
-
-
-            if (remove) GUI.removeComponent(uuid.toString(), "__window");
-
-            GUI.createComponent(uuid.toString(), ComponentFactory.load(new File(new File(Main.dataFolder, "cache"), uuid.toString() + ".xml"),
-                    CSSFactory.load(new File(new File(Main.dataFolder, "cache"), "__style.css"))));
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -557,7 +568,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
 
             writer.println("<root>");
             writer.println("    <panel id=\"__window\">");
-            writer.println("        <panel id=\"_loader\" />");
+            writer.println("        <image id=\"_loader\" />");
             writer.println("    </panel>");
             writer.println("</root>");
 
@@ -570,7 +581,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
 
             Loading = true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Main.log.error(e.getStackTrace().toString());;
         }
         Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
             @Override
@@ -580,12 +591,12 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                         Thread.sleep(25);
                     } while (Loading);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Main.log.error(e.getStackTrace().toString());;
                 }
 
                 if (methodID > 0) {
                     if (methodID ==  1) {
-                        ServerSelectionWindow(player, (int) args[0], (SubServer) args[1], true);
+                        ServerSelectionWindow(player, (int) args[0], true);
                     } else if (methodID == 2) {
                         ServerAdminWindow(player, (SubServer) args[0], true);
                     }
@@ -607,6 +618,9 @@ public class BetterGUI implements GUIHandler, ComponentManager {
 
     @Override
     public void receiveForm(String uuid, Form form) {
+        List<SubServer> SubServers = new ArrayList<SubServer>();
+        SubServers.addAll(API.getSubServers());
+
         final String button = form.getButtonId();
         final Player player = Main.game.getServer().getPlayer(UUID.fromString(uuid)).get();
 
@@ -623,33 +637,33 @@ public class BetterGUI implements GUIHandler, ComponentManager {
 
             case "__next":
                 if (form.getInput("__page") != null && StringUtils.isNumeric(form.getInput("__page"))) {
-                    ServerSelectionWindow(player, Integer.parseInt(form.getInput("__page")), null, true);
+                    ServerSelectionWindow(player, Integer.parseInt(form.getInput("__page")), true);
 
                 } else {
-                    ServerSelectionWindow(player, 0, null, true);
+                    ServerSelectionWindow(player, 0, true);
                 }
                 break;
 
             case "__back":
                 if (form.getInput("__page") != null && StringUtils.isNumeric(form.getInput("__page"))) {
-                    ServerSelectionWindow(player, Integer.parseInt(form.getInput("__page")) - 2, null, true);
+                    ServerSelectionWindow(player, Integer.parseInt(form.getInput("__page")) - 2, true);
 
-                } else if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(Integer.parseInt(form.getInput("_server")))) {
-                    ServerSelectionWindow(player, (int) Math.floor((SubServers.indexOf(API.getSubServer(Integer.parseInt(form.getInput("_server"))).Name) + 1) / 17), null, true);
+                } else if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server"))))) {
+                    ServerSelectionWindow(player, (int) Math.floor(SubServers.indexOf(API.getSubServer(Integer.parseInt(form.getInput("_server")))) / 17), true);
 
                 } else {
-                    ServerSelectionWindow(player, 0, null, true);
+                    ServerSelectionWindow(player, 0, true);
                 }
                 break;
             case "_teleport":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(Integer.parseInt(form.getInput("_server"))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
                     GUI.removeComponent(uuid, "__window");
                     API.getSubServer(Integer.parseInt(form.getInput("_server"))).sendPlayer(player);
                 }
                 break;
 
             case "_start":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(Integer.parseInt(form.getInput("_server"))) && !API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && !API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
                     API.getSubServer(Integer.parseInt(form.getInput("_server"))).start(player);
                     LoaderWindow(player, 2, true, API.getSubServer(Integer.parseInt(form.getInput("_server"))));
                     Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
@@ -659,7 +673,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                             try {
                                 Thread.sleep(1500);
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Main.log.error(e.getStackTrace().toString());;
                             }
                             Loading = false;
 
@@ -669,7 +683,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 break;
 
             case "_stop":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(Integer.parseInt(form.getInput("_server"))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
                     LoaderWindow(player, 2, true, API.getSubServer(Integer.parseInt(form.getInput("_server"))));
                     Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
 
@@ -683,7 +697,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                                     Thread.sleep(1500);
                                 }
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Main.log.error(e.getStackTrace().toString());;
                             }
                             Loading = false;
 
@@ -693,7 +707,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 break;
 
             case "_kill":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(Integer.parseInt(form.getInput("_server"))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
                     API.getSubServer(Integer.parseInt(form.getInput("_server"))).terminate(player);
                     LoaderWindow(player, 2, true, API.getSubServer(Integer.parseInt(form.getInput("_server"))));
                     Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
@@ -703,7 +717,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                             try {
                                 Thread.sleep(1500);
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Main.log.error(e.getStackTrace().toString());;
                             }
                             Loading = false;
 
@@ -713,7 +727,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 break;
 
             case "_send":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(Integer.parseInt(form.getInput("_server"))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
                     if (form.getInput("_cmd") != null && StringUtils.isNotEmpty(form.getInput("_cmd"))) {
                         if (form.getInput("_cmd").startsWith("/")) {
                             API.getSubServer(Integer.parseInt(form.getInput("_server"))).sendCommand(player, form.getInput("_cmd").substring(1));
@@ -729,7 +743,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                             try {
                                 Thread.sleep(750);
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Main.log.error(e.getStackTrace().toString());;
                             }
                             Loading = false;
 
@@ -738,12 +752,8 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 }
                 break;
 
-            case "__server__Proxy":
-                ServerAdminWindow(player, API.getSubServer(0), true);
-                break;
-
             default:
-                if (SubServers.contains(StringUtils.stripEnd(button.replace("__server_", ""), " "))) {
+                if (SubServers.contains(API.getSubServer(StringUtils.stripEnd(button.replace("__server_", ""), " ")))) {
                     ServerAdminWindow(player, API.getSubServer(StringUtils.stripEnd(button.replace("__server_", ""), " ")), true);
                 }
                 break;

@@ -34,6 +34,7 @@ public class NavCommand extends Command {
 				ProxyServer.getInstance().getLogger().info(Main.lprefix + Main.lang.get("Lang.Commands.Teleport-Server-List").split("\\|\\|\\|")[1]); 
 				ProxyServer.getInstance().getLogger().info(String);
 			}
+
 		} else if (ProxyServer.getInstance().getServers().keySet().contains(args[0])) {
 			if (args.length > 1) {
 				if (ProxyServer.getInstance().getPlayer(sender.getName()) == null || ProxyServer.getInstance().getPlayer(sender.getName()).hasPermission("bungeecord.command.send") || ProxyServer.getInstance().getPlayer(sender.getName()).hasPermission("SubServers.Teleport.Others")) {
@@ -100,14 +101,14 @@ public class NavCommand extends Command {
 							ProxyServer.getInstance().getPlayer(sender.getName()).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.get("Lang.Commands.Teleport"));
 						}
 						ProxyServer.getInstance().getPlayer(args[1]).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.get("Lang.Commands.Teleport"));
-						ProxyServer.getInstance().getPlayer(args[1]).connect(Main.PlayerServerInfo.get(args[0]));
+						ProxyServer.getInstance().getPlayer(args[1]).connect(Main.PlayerServerInfo.get(args[0].replace("!", "")));
 					}
 				} else {
 					ProxyServer.getInstance().getPlayer(sender.getName()).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.get("Lang.Commands.Teleport-Permission-Error"));
 				}
 			} else {
 				ProxyServer.getInstance().getPlayer(sender.getName()).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.get("Lang.Commands.Teleport"));
-				ProxyServer.getInstance().getPlayer(sender.getName()).connect(Main.PlayerServerInfo.get(args[0]));
+				ProxyServer.getInstance().getPlayer(sender.getName()).connect(Main.PlayerServerInfo.get(args[0].replace("!", "")));
 			}
 		} else {
 			ProxyServer.getInstance().getPlayer(sender.getName()).sendMessage(ChatColor.RED + Main.lang.get("Lang.Commands.Teleport-Config-Error"));

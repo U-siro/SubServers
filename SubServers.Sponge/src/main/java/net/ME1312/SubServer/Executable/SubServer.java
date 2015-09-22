@@ -93,7 +93,7 @@ public class SubServer implements Serializable {
 												cmd.newLine();
 												cmd.flush();
 											  } catch (IOException e) {
-													e.printStackTrace();
+													Main.log.error(e.getStackTrace().toString());
 											  }
 								              StdIn = null;
 										}
@@ -131,7 +131,7 @@ public class SubServer implements Serializable {
 										sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Main.config.getNode("Settings", "Lobby-Port").getString());
 										Thread.sleep(500);
 									} catch (InterruptedException e) {
-										e.printStackTrace();
+										Main.log.error(e.getStackTrace().toString());
 									}
 									for(Iterator<String> str = Main.SubServers.iterator(); str.hasNext(); ) {
 										String item = str.next();
@@ -139,21 +139,21 @@ public class SubServer implements Serializable {
 										try {
 											Thread.sleep(500);
 										} catch (InterruptedException e) {
-											e.printStackTrace();
+											Main.log.error(e.getStackTrace().toString());
 										}
 									}
 								};
 							}).submit(Main.Plugin);
 							try {
 								Process.waitFor();
-								SubEvent.RunEvent(Main, SubEvent.Events.SubShellExitEvent, Server);
+								API.executeEvent(SubEvent.Events.SubShellExitEvent, Server);
 							} catch (InterruptedException e) {
-								e.printStackTrace();
+								Main.log.error(e.getStackTrace().toString());
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-								e.printStackTrace();
+								Main.log.error(e.getStackTrace().toString());
 							}
 						} catch (IOException e) {
-							e.printStackTrace();
+							Main.log.error(e.getStackTrace().toString());
 						}
 						
 						/**
@@ -190,7 +190,7 @@ public class SubServer implements Serializable {
 											cmd.newLine();
 							              	cmd.flush();
 										  } catch (IOException e) {
-											e.printStackTrace();
+											Main.log.error(e.getStackTrace().toString());
 										  }
 							              StdIn = null;
 										}
@@ -207,14 +207,14 @@ public class SubServer implements Serializable {
 							}
 							try {
 								Process.waitFor();
-								SubEvent.RunEvent(Main, SubEvent.Events.SubShellExitEvent, Server);
+								API.executeEvent(SubEvent.Events.SubShellExitEvent, Server);
 							} catch (InterruptedException e) {
-								e.printStackTrace();
+								Main.log.error(e.getStackTrace().toString());
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-								e.printStackTrace();
+								Main.log.error(e.getStackTrace().toString());
 							}
 						} catch (IOException e) {
-							e.printStackTrace();
+							Main.log.error(e.getStackTrace().toString());
 						}
 						
 						/**
@@ -251,14 +251,14 @@ public class SubServer implements Serializable {
 	 */
 	public boolean start() {
 		try {
-			if (SubEvent.RunEvent(Main, SubEvent.Events.SubStartEvent, this, null)) {
+			if (API.executeEvent(SubEvent.Events.SubStartEvent, this, null)) {
 				start(true);
 				return true;
 			} else {
 				return false;
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | IllegalStateException e) {
-			e.printStackTrace();
+			Main.log.error(e.getStackTrace().toString());
 			return false;
 		}
 	}
@@ -270,14 +270,14 @@ public class SubServer implements Serializable {
 	 */
 	public boolean start(final Player sender) {
 		try {
-			if (SubEvent.RunEvent(Main, SubEvent.Events.SubStartEvent, this, sender)) {
+			if (API.executeEvent(SubEvent.Events.SubStartEvent, this, sender)) {
 				start(true);
 				return true;
 			} else {
 				return false;
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			Main.log.error(e.getStackTrace().toString());
 			return false;
 		}
 	}
@@ -288,14 +288,14 @@ public class SubServer implements Serializable {
 	 */
 	public boolean sendCommand(String cmd) {
 		try {
-			if (SubEvent.RunEvent(Main, SubEvent.Events.SubRunCommandEvent, this, null, cmd)) {
+			if (API.executeEvent(SubEvent.Events.SubRunCommandEvent, this, null, cmd)) {
 				StdIn = cmd;
 				return true;
 			} else {
 				return false;
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			Main.log.error(e.getStackTrace().toString());
 			return false;
 		}
 	}
@@ -307,14 +307,14 @@ public class SubServer implements Serializable {
 	 */
 	public boolean sendCommand(Player sender, String cmd) {
 		try {
-			if (SubEvent.RunEvent(Main, SubEvent.Events.SubRunCommandEvent, this, sender, cmd)) {
+			if (API.executeEvent(SubEvent.Events.SubRunCommandEvent, this, sender, cmd)) {
 				StdIn = cmd;
 				return true;
 			} else {
 				return false;
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			Main.log.error(e.getStackTrace().toString());
 			return false;
 		}
 	}
@@ -332,7 +332,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean stop() {
 		try {
-			if (SubEvent.RunEvent(Main, SubEvent.Events.SubStopEvent, this, null)) {
+			if (API.executeEvent(SubEvent.Events.SubStopEvent, this, null)) {
 				if (Name.equalsIgnoreCase("~Proxy")) {
 					StdIn = "end";
 				} else {
@@ -343,7 +343,7 @@ public class SubServer implements Serializable {
 				return false;
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			Main.log.error(e.getStackTrace().toString());
 			return false;
 		}
 	}
@@ -354,7 +354,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean stop(Player sender) {
 		try {
-			if (SubEvent.RunEvent(Main, SubEvent.Events.SubStopEvent, this, sender)) {
+			if (API.executeEvent(SubEvent.Events.SubStopEvent, this, sender)) {
 				if (Name.equalsIgnoreCase("~Proxy")) {
 					StdIn = "end";
 				} else {
@@ -365,7 +365,7 @@ public class SubServer implements Serializable {
 				return false;
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			Main.log.error(e.getStackTrace().toString());
 			return false;
 		}
 	}
@@ -375,14 +375,14 @@ public class SubServer implements Serializable {
 	 */
 	public boolean terminate() {
 		try {
-			if (SubEvent.RunEvent(Main, SubEvent.Events.SubStopEvent, this, null)) {
+			if (API.executeEvent(SubEvent.Events.SubStopEvent, this, null)) {
 				Process.destroy();
 				return true;
 			} else {
 				return false;
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			Main.log.error(e.getStackTrace().toString());
 			return false;
 		}
 	}
@@ -393,14 +393,14 @@ public class SubServer implements Serializable {
 	 */
 	public boolean terminate(Player sender) {
 		try {
-			if (SubEvent.RunEvent(Main, SubEvent.Events.SubStopEvent, this, sender)) {
+			if (API.executeEvent(SubEvent.Events.SubStopEvent, this, sender)) {
 				Process.destroy();
 				return true;
 			} else {
 				return false;
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			Main.log.error(e.getStackTrace().toString());
 			return false;
 		}
 	}

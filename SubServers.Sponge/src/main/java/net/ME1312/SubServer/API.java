@@ -1,13 +1,17 @@
 package net.ME1312.SubServer;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import net.ME1312.SubServer.Executable.SubServerCreator.ServerTypes;
 import net.ME1312.SubServer.Executable.SubServerCreator;
 import net.ME1312.SubServer.GUI.GUIHandler;
+import net.ME1312.SubServer.Libraries.Events.SubEvent;
+import net.ME1312.SubServer.Libraries.Events.SubEvent.Events;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -96,10 +100,8 @@ public class API {
 	 * 
 	 * @return List<SubServer> Of all Servers Defined in the Configuration
 	 */
-	public static List<SubServer> getSubServers() {
-		List<SubServer> Server = new ArrayList<SubServer>();
-		Server.addAll(Main.Servers.values());
-		return Server;
+	public static Collection<SubServer> getSubServers() {
+		return Main.Servers.values();
 	}
 	
 	public static SubServer getSubServer(int PID) {
@@ -140,7 +142,7 @@ public class API {
                     writer.close();
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Main.log.error(e.getStackTrace().toString());
                 }
             }
 
@@ -155,7 +157,7 @@ public class API {
 							Main.Servers.get(Main.PIDs.get(Name)).waitFor();
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							Main.log.error(e.getStackTrace().toString());
 						}
 						if (getSubServer(0).isRunning())
 							getSubServer(0).sendCommandSilently("subconf@proxy removeserver " + Name);
@@ -182,7 +184,7 @@ public class API {
 	public static void addServer(Player Sender, final String Name, int Port, boolean Log, File Dir, Executable Exec, double StopAfter, boolean Temporary) {
 			final int PID = (Main.SubServers.size() + 1);
 			Main.Servers.put(PID, new SubServer(true, Name, PID, Port, Log, Dir, Exec, StopAfter, Temporary, Main));
-			Main.PIDs.put(Name, PID);
+		Main.PIDs.put(Name, PID);
 			Main.SubServers.add(Name);
 
             if ((new File(new File(Main.dataFolder, "cache"), "__style.css")).exists()) {
@@ -195,12 +197,12 @@ public class API {
                     writer.println();
                     writer.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Main.log.error(e.getStackTrace().toString());
                 }
             }
 
 			Main.Servers.get(PID).start(Sender);
-			getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getString("Settings.Server-IP") + " " + Port);
+		getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getString("Settings.Server-IP") + " " + Port);
 
 			if (Temporary) {
 				Main.game.getScheduler().createTaskBuilder().async().submit(new Runnable() {
@@ -210,7 +212,7 @@ public class API {
 						Main.Servers.get(Main.PIDs.get(Name)).waitFor();
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							Main.log.error(e.getStackTrace().toString());
 						}
 						if (getSubServer(0).isRunning()) getSubServer(0).sendCommandSilently("subconf@proxy removeserver " + Name);
 						Main.Servers.remove(PID);
@@ -293,7 +295,28 @@ public class API {
 		Main.GUI = Handler;
 	}
 
+	/**
+	 * Gets the Lang File
+	 *
+	 * @return The lang file's nodes
+	 */
 	public static CommentedConfigurationNode getLang() { return Main.lang; }
+
+
+	/**
+	 *
+	 * @param Event The Event to Execute
+	 * @param Args The Args required to execute this event
+	 * @return If the event was cancelled
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 */
+	public static boolean executeEvent(Events Event, Object... Args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		return SubEvent.RunEvent(Main, Event, Args);
+	}
 
 	/**
 	 * Gets the SubServers Version

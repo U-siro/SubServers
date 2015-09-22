@@ -126,14 +126,17 @@ public class API {
 			Main.Servers.put(PID, new SubServer(true, Name, PID, Port, Log, Dir, Exec, StopAfter, Temporary, Main));
 			Main.PIDs.put(Name, PID);
 			Main.SubServers.add(Name);
-			
-			Main.Servers.get(PID).start();
+			Bukkit.getLogger().info("Servers: " + Main.Servers.toString());
+			Bukkit.getLogger().info("PIDs: " + Main.PIDs.toString());
+			Bukkit.getLogger().info("SubServers: " + Main.SubServers.toString());
+
 			if (getSubServer(0).isRunning()) getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getString("Settings.Server-IP") + " " + Port);
 			
 			if (Temporary) {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
+						Main.Servers.get(PID).start();
 						try {
 						Thread.sleep(1500);
 						Main.Servers.get(Main.PIDs.get(Name)).waitFor();
@@ -167,11 +170,11 @@ public class API {
 			Main.Servers.put(PID, new SubServer(true, Name, PID, Port, Log, Dir, Exec, StopAfter, Temporary, Main));
 			Main.PIDs.put(Name, PID);
 			Main.SubServers.add(Name);
-			
-			Main.Servers.get(PID).start(Sender);
+
 			getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getString("Settings.Server-IP") + " " + Port);
 			
 			if (Temporary) {
+				Main.Servers.get(PID).start(Sender);
 				new BukkitRunnable() {
 					@Override
 					public void run() {

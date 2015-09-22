@@ -179,6 +179,7 @@ public class GUI implements Listener {
 	protected void openServerWindow(Player player, String server) {
 		if (server != null) {
 			inv = Bukkit.createInventory(null, 27, ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW + server);
+
 			if (API.getSubServer(server).isRunning()) {
 				block = new ItemStack(Material.EMERALD_BLOCK);
 		    	blockMeta = block.getItemMeta();

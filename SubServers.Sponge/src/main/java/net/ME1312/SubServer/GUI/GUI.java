@@ -9,11 +9,11 @@ import org.spongepowered.api.text.Texts;
  */
 public class GUI implements GUIHandler {
 
-    public void ServerSelectionWindow(Player player, int page, SubServer server) {
-        player.sendMessage(Texts.of("SubServers GUI has not been added yet. Please use the Commands in /help for now."));
+    public void ServerSelectionWindow(Player player, int page) {
+        player.sendMessage(Texts.of("SubServers GUI has not been added yet. Please use the Commands in /sub help for now."));
     }
 
     public void ServerAdminWindow(Player player, SubServer server) {
-        player.sendMessage(Texts.of("SubServers GUI has not been added yet. Please use the Commands in /help for now."));
+        player.sendMessage(Texts.of("SubServers GUI has not been added yet. Please use the Commands in /sub help for now."));
     }
 }

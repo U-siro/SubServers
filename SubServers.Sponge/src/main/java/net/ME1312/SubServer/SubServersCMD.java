@@ -34,7 +34,7 @@ public class SubServersCMD implements CommandExecutor {
             String[] args = (((String) arguments.getOne("args").get())).split(" ");
             if (args[0].equalsIgnoreCase("start")) {
                 if (args.length == 2) {
-                    if (!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Start." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Start.*")) {
+                    if (true/*!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Start." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Start.*")*/) { //TODO
                         if (args[1].equals("~Proxy")) {
                             if (Main.config.getNode("Proxy", "enabled").getBoolean() == true && !API.getSubServer(0).isRunning()) {
                                 if (sender instanceof Player) {
@@ -84,7 +84,7 @@ public class SubServersCMD implements CommandExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("cmd") || args[0].equalsIgnoreCase("command")) {
                 if (args.length >= 3) {
-                    if (!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Send." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Send.*")) {
+                    if (true/*!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Send." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Send.*")*/) { //TODO
                         if (args[1].equals("~Proxy")) {
                             if (API.getSubServer(args[1]).isRunning()) {
                                 int i = 2;
@@ -152,7 +152,7 @@ public class SubServersCMD implements CommandExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("stop")) {
                 if (args.length == 2) {
-                    if (!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Stop." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Stop.*")) {
+                    if (true/*!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Stop." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Stop.*")*/) { //TODO
                         if (args[1].equals("~Proxy")) {
                             if (API.getSubServer(args[1]).isRunning()) {
                                 if (sender instanceof Player) {
@@ -204,7 +204,7 @@ public class SubServersCMD implements CommandExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("kill")) {
                 if (args.length == 2) {
-                    if (!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Kill." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Kill.*")) {
+                    if (true/*!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Kill." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Kill.*")*/) { //TODO
                         if (args[1].equals("~Proxy")) {
                             if (API.getSubServer(args[1]).isRunning()) {
                                 if (sender instanceof Player) {
@@ -255,7 +255,7 @@ public class SubServersCMD implements CommandExecutor {
                     }
                 }
             } else if (args[0].equalsIgnoreCase("reload")) {
-                if (!(sender instanceof Player) || ((Player) sender).hasPermission("SubServer.Command.Reload")) {
+                if (true/*!(sender instanceof Player) || ((Player) sender).hasPermission("SubServer.Command.Reload")*/) { //TODO
                     if (sender instanceof Player) {
                         ((Player) sender).sendMessage(Texts.of(ChatColor.GOLD + Main.lprefix + StringEscapeUtils.unescapeJava(Main.lang.getNode("Lang", "Debug", "Config-Reload-Warn").getString())));
                     } else {
@@ -329,7 +329,7 @@ public class SubServersCMD implements CommandExecutor {
                                     API.getSubServer(0).sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Main.config.getNode("Settings", "Lobby-Port").getString());
                                     Thread.sleep(500);
                                 } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    Main.log.error(e.getStackTrace().toString());
                                 }
                             }
 
@@ -344,7 +344,7 @@ public class SubServersCMD implements CommandExecutor {
                                     try {
                                         Thread.sleep(500);
                                     } catch (InterruptedException e) {
-                                        e.printStackTrace();
+                                        Main.log.error(e.getStackTrace().toString());
                                     }
                                 }
                                 do {
@@ -400,9 +400,9 @@ public class SubServersCMD implements CommandExecutor {
                     Main.log.info("Plugin Version: /SubServer Version");
                     if (API.getSubServer(0).isRunning()) Main.log.info("Teleport: /Go <Server> <Player>");
                 }
-            } else if (Main.config.getNode("Settings", "GUI", "Enabled").getBoolean() && (sender instanceof Player)) {
+            } else if (Main.config.getNode("Settings", "GUI", "Enabled").getBoolean() && (sender instanceof Player) /*&& ((Player) sender).hasPermission("SubServer.Command")*/) { //TODO
                 if (Main.SubServers.contains(args[0])) {
-                    Main.GUI.ServerSelectionWindow((Player) sender, 0, API.getSubServer(args[0]));
+                    Main.GUI.ServerAdminWindow((Player) sender, API.getSubServer(args[0]));
                 } else {
                     ((Player) sender).sendMessage(Texts.of(ChatColor.RED + Main.lprefix + "Invalid Server Name"));
                 }
@@ -414,20 +414,8 @@ public class SubServersCMD implements CommandExecutor {
                 }
             }
         } else {
-            if ((sender instanceof Player) /*&& ((Player) sender).hasPermission("SubServer.Command")*/) {
-                if (Main.config.getNode("Settings", "GUI", "Enabled").getBoolean()) {
-                    Main.GUI.ServerSelectionWindow((Player) sender, 0, null);
-                } else {
-                    ((Player) sender).sendMessage(Texts.of("Subservers Command List:"));
-                    ((Player) sender).sendMessage(Texts.of("GUI: /Subserver [Server]"));
-                    ((Player) sender).sendMessage(Texts.of("Reload Plugin: /SubServer Reload"));
-                    ((Player) sender).sendMessage(Texts.of("Stop Server: /SubServer Stop <Server>"));
-                    ((Player) sender).sendMessage(Texts.of("Kill Server: /SubServer Kill <Server>"));
-                    ((Player) sender).sendMessage(Texts.of("Start Server: /SubServer Start <Server>"));
-                    ((Player) sender).sendMessage(Texts.of("Send Command: /SubServer Cmd <Server> <Command> " + ChatColor.ITALIC + "[Args...]"));
-                    ((Player) sender).sendMessage(Texts.of("Plugin Version: /SubServer Version"));
-                    if (API.getSubServer(0).isRunning()) ((Player) sender).sendMessage(Texts.of("Teleport: /Go <Server> [Player]"));
-                }
+            if (Main.config.getNode("Settings", "GUI", "Enabled").getBoolean() && (sender instanceof Player) /*&& ((Player) sender).hasPermission("SubServer.Command")*/) { //TODO
+                Main.GUI.ServerSelectionWindow((Player) sender, 0);
             } else {
                 if (sender instanceof Player) {
                     ((Player) sender).sendMessage(Texts.of("Subservers Command List:"));

@@ -134,7 +134,7 @@ public class SubEvent {
 	 * @throws NoSuchMethodException
 	 * @throws SecurityException
 	 */
-	public static boolean RunEvent(Main Main, Events Event, Object... args)
+	public static boolean RunEvent(Main Main, Events Event, Object[] args)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
 		boolean EventStatus = true;

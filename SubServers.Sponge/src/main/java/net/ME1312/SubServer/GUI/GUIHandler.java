@@ -11,9 +11,8 @@ public interface GUIHandler extends SubListener {
      *
      * @param player The Player Opening this GUI
      * @param page The Page Number
-     * @param server The SubServer or Null if none is specified
      */
-    default void ServerSelectionWindow(Player player, int page, SubServer server) { return; }
+    void ServerSelectionWindow(Player player, int page);
 
     /**
      * Server Admin Window
@@ -21,6 +20,6 @@ public interface GUIHandler extends SubListener {
      * @param player The Player Opening this GUI
      * @param server The SubServer to be Managed
      */
-    default void ServerAdminWindow(Player player, SubServer server) { return; }
+    void ServerAdminWindow(Player player, SubServer server);
 
 }

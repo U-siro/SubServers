@@ -1,6 +1,5 @@
 package net.ME1312.SubServer;
 
-import com.google.common.eventbus.Subscribe;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.File;
@@ -22,10 +21,8 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GameLoadCompleteEvent;
-import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
+import org.spongepowered.api.event.game.state.*;
+import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
@@ -41,9 +38,9 @@ import org.spongepowered.api.util.command.spec.CommandSpec;
 public class Main {
     public static SubServerCreator ServerCreator;
 
-    public HashMap<Integer, SubServer> Servers = new HashMap();
-    public HashMap<String, Integer> PIDs = new HashMap();
-    public HashMap<PluginContainer, List<SubListener>> EventHandlers = new HashMap();
+    public HashMap<Integer, SubServer> Servers = new HashMap<Integer, SubServer>();
+    public HashMap<String, Integer> PIDs = new HashMap<String, Integer>();
+    public HashMap<PluginContainer, List<SubListener>> EventHandlers = new HashMap<PluginContainer, List<SubListener>>();
     public List<String> SubServers = new ArrayList<String>();
     @Inject
     public PluginContainer Plugin;
@@ -65,21 +62,30 @@ public class Main {
     public Version PluginVersion;
     public Version MCVersion;
 
-    @Subscribe
-    public void onInitialization(GameInitializationEvent event) {
+    @Listener
+    public void onPluginSetup(GamePreInitializationEvent event) {
         /* Pre Setup Actions */
         lprefix = "[" + Plugin.getName() + "] ";
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
-        
-        /* API Register */
-        new API(this);
-        log.info("Enabling " + Plugin.getName() + " Version " + Plugin.getVersion() + "!");
-        
+
+        /* Clear Cache if exists */
+        if (new File(dataFolder, "cache").exists()) {
+            deleteDir(new File(dataFolder, "cache"));
+        }
+
         /* Version Grab */
         PluginVersion = new Version(Plugin.getVersion());
         MCVersion = new Version(event.getGame().getPlatform().getMinecraftVersion().getName());
+
+        /* API Register */
+        new API(this);
+    }
+
+    @Listener
+    public void onInitialization(GameInitializationEvent event) {
+        log.info("Enabling " + Plugin.getName() + " Version " + Plugin.getVersion() + "!");
         log.info("Loading Libraries for " + MCVersion);
         
         /* Config Update & Register */
@@ -88,8 +94,8 @@ public class Main {
                 copyFromJar("config.conf", new File(dataFolder, "config.conf").getPath());
                 log.info("Created Config.conf!");
                 
-            } else if (!((CommentedConfigurationNode)((HoconConfigurationLoader.Builder)HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build().load()).getNode("Settings", "config-version").getString().equalsIgnoreCase("1.8.8e+")) {
-                Files.move((File)new File(dataFolder, "config.conf"), (File)new File(dataFolder, "old-config." + Math.round(Math.random() * 100000.0) + ".conf"));
+            } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build().load()).getNode("Settings", "config-version").getString().equalsIgnoreCase("1.8.8e+")) {
+                Files.move(new File(dataFolder, "config.conf"), new File(dataFolder, "old-config." + Math.round(Math.random() * 100000.0) + ".conf"));
                 copyFromJar("config.conf", new File(dataFolder, "config.conf").getPath());
                 log.info("Updated Config.conf!");
             }
@@ -97,23 +103,18 @@ public class Main {
                 copyFromJar("lang.conf", new File(dataFolder, "lang.conf").getPath());
                 log.info("Created Lang.conf!");
                 
-            } else if (!((CommentedConfigurationNode)((HoconConfigurationLoader.Builder)HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load()).getNode("config-version").getString().equalsIgnoreCase("1.8.8e+")) {
-                Files.move((File)new File(dataFolder, "lang.conf"), (File)new File(dataFolder, "old-lang." + Math.round(Math.random() * 100000.0) + ".conf"));
+            } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load()).getNode("config-version").getString().equalsIgnoreCase("1.8.8e+")) {
+                Files.move(new File(dataFolder, "lang.conf"), new File(dataFolder, "old-lang." + Math.round(Math.random() * 100000.0) + ".conf"));
                 copyFromJar("lang.conf", new File(dataFolder, "lang.conf").getPath());
                 log.info("Updated Lang.conf!");
             }
 
-            if (new File(dataFolder, "cache").exists()) {
-                deleteDir(new File(dataFolder, "cache"));
-            }
-            new File(dataFolder, "cache").mkdirs();
-
-            configManager = ((HoconConfigurationLoader.Builder)HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build();
-            config = (CommentedConfigurationNode)configManager.load();
-            lang = (CommentedConfigurationNode)((HoconConfigurationLoader.Builder)HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load();
+            configManager = (HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build();
+            config = configManager.load();
+            lang = (HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load();
         
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace().toString());
         }
 
         /* Register SubServers */
@@ -134,7 +135,10 @@ public class Main {
                     config.getNode("Servers", item, "log").getBoolean(), new File(config.getNode("Servers", item, "dir").getString()),
                     new Executable(config.getNode("Servers", item, "shell").getString()), config.getNode("Servers", item, "stop-after").getDouble(), false, this));
         }
+    }
 
+    @Listener
+    public void onFinishedInitialization(GamePostInitializationEvent event) {
         /* Register Default GUI */
         GUI = new GUI();
 
@@ -147,12 +151,12 @@ public class Main {
             new Metrics(game, Plugin);
         }
         catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace().toString());
         }
     }
 
-    @Subscribe
-    public void onLoadComplete(GameLoadCompleteEvent event) {
+    @Listener
+    public void onFinishedStarting(GameStartedServerEvent event) {
         /* Start SubServers */
         for(Iterator<String> items = SubServers.iterator(); items.hasNext(); ) {
             String item = items.next();
@@ -166,14 +170,20 @@ public class Main {
         }
     }
 
-    @Subscribe
+    @Listener
     public void onServerStop(GameStoppingServerEvent event) {
+        /* Clear Cache */
         if (new File(dataFolder, "cache").exists()) {
             log.info("Clearing Cache...");
             deleteDir(new File(dataFolder, "cache"));
         }
-        log.info("Stopping SubServers...");
+
+    }
+
+    @Listener
+    public void onServerStopped(GameStoppedServerEvent event) {
         /* Stop SubServers */
+        log.info("Stopping SubServers...");
         try {
             if (ServerCreator != null && ServerCreator.isRunning()) {
                 ServerCreator.waitFor();
@@ -198,12 +208,10 @@ public class Main {
                 }
             }
             log.info("Plugin Disabled.");
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             log.error("Problem Stopping Subservers.");
             log.error("Subservers will stay as Background Processes if not Stopped");
-            e.printStackTrace();
-            log.warn("Config Not Saved: Preserved config from Invalid Changes.");
+            log.error(e.getStackTrace().toString());
             log.warn("Plugin Partially Disabled.");
         }
     }
@@ -226,21 +234,16 @@ public class Main {
         }
     }
 
-    public boolean deleteDir(File dir)
-    {
-        if (dir.isDirectory())
-        {
+    public boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
             String[] children = dir.list();
-            for (int i=0; i<children.length; i++)
-            {
+            for (int i=0; i<children.length; i++) {
                 boolean success = deleteDir(new File(dir, children[i]));
-                if (!success)
-                {
+                if (!success) {
                     return false;
                 }
             }
         }
-        // The directory is now empty or this is a file so delete it
         return dir.delete();
     }
 }

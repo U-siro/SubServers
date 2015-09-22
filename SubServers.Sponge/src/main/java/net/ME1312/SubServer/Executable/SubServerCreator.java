@@ -44,14 +44,14 @@ public class SubServerCreator {
 
     public boolean run() {
         try {
-            if (SubEvent.RunEvent(Main, SubEvent.Events.SubCreateEvent, this, Player, Type)) {
+            if (API.executeEvent(SubEvent.Events.SubCreateEvent, this, Player, Type)) {
                 run(true);
                 return true;
             } else {
                 return false;
             }
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
+            Main.log.error(e.getStackTrace().toString());
             return false;
         }
     }
@@ -76,7 +76,7 @@ public class SubServerCreator {
                                 Process1.waitFor();
                                 Thread.sleep(1500);
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Main.log.error(e.getStackTrace().toString());
                             }
 
                             if (!(new File(Dir, "build-subserver.sh").exists())) {
@@ -89,7 +89,7 @@ public class SubServerCreator {
                                     Process.waitFor();
                                     Thread.sleep(500);
                                 } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    Main.log.error(e.getStackTrace().toString());
                                 }
 
                                 if (Process.exitValue() == 0) {
@@ -120,7 +120,7 @@ public class SubServerCreator {
                                 Process1.waitFor();
                                 Thread.sleep(1500);
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Main.log.error(e.getStackTrace().toString());
                             }
 
                             if (!(new File(Dir, "build-subserver.sh").exists())) {
@@ -131,7 +131,7 @@ public class SubServerCreator {
                                     Process2.waitFor();
                                     Thread.sleep(500);
                                 } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    Main.log.error(e.getStackTrace().toString());
                                 }
                                 if (Process2.exitValue() != 0) {
                                     Main.log.warn("Problem Setting Executable Permissions for build-subserver.sh");
@@ -145,7 +145,7 @@ public class SubServerCreator {
                                     Process.waitFor();
                                     Thread.sleep(500);
                                 } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    Main.log.error(e.getStackTrace().toString());
                                 }
 
                                 if (Process.exitValue() == 0) {
@@ -172,7 +172,7 @@ public class SubServerCreator {
                             }
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Main.log.error(e.getStackTrace().toString());
                     }
                     Running = false;
                 }
