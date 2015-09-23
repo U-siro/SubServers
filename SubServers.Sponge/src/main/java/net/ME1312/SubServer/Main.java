@@ -34,7 +34,7 @@ import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 
-@Plugin(id="SubServers", name="SubServers", version="1.8.8g")
+@Plugin(id="SubServers", name="SubServers", version="1.8.8h")
 public class Main {
     public static SubServerCreator ServerCreator;
 
