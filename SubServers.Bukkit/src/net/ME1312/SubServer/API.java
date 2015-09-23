@@ -1,10 +1,13 @@
 package net.ME1312.SubServer;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.ME1312.SubServer.Libraries.Config.ConfigFile;
+import net.ME1312.SubServer.Libraries.Events.SubEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -226,7 +229,29 @@ public class API {
 		Main.EventHandlers.put(Plugin, listeners);
 		
 	}
-	
+	/**
+	 * Gets the Lang File
+	 *
+	 * @return The lang file's nodes
+	 */
+	public static ConfigFile getLang() { return Main.lang; }
+
+
+	/**
+	 *
+	 * @param Event The Event to Execute
+	 * @param Args The Args required to execute this event
+	 * @return If the event was cancelled
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 */
+	public static boolean executeEvent(SubEvent.Events Event, Object... Args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		return SubEvent.RunEvent(Main, Event, Args);
+	}
+
 	/**
 	 * Gets the SubServers Version
 	 * 

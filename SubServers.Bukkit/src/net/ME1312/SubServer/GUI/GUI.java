@@ -267,7 +267,7 @@ public class GUI implements Listener {
 				} else {
 					block = new ItemStack(Material.EMERALD_BLOCK);
 					blockMeta = block.getItemMeta();
-					blockMeta.setDisplayName(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Start"));
+					blockMeta.setDisplayName(ChatColor.GRAY + Main.lang.getString("Lang.GUI.Start"));
 					if (player.hasPermission("SubServer.Command.start." + server) && player.hasPermission("SubServer.Command.start.*")) {
 						blockMeta.setLore(Arrays.asList(ChatColor.DARK_RED + Main.lang.getString("Lang.GUI.Removed")));
 					} else {
