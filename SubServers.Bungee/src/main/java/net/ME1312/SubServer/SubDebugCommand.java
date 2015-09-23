@@ -13,8 +13,8 @@ import net.ME1312.SubServer.Main;
 public class SubDebugCommand extends Command {
 	private Main Main;
 	
-	public SubDebugCommand(Main Main){
-        super("subconf@proxy", "SubServers.debug");
+	public SubDebugCommand(Main Main, String Command){
+        super(Command, "SubServers.debug");
         this.Main = Main;
     }
 	

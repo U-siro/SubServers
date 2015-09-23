@@ -23,8 +23,8 @@ public class PlayerListener implements Listener {
         ServerInfo kickedFrom = null;
         if (ev.getPlayer().getServer() != null) {
             kickedFrom = ev.getPlayer().getServer().getInfo();
-        } else if (Main.Plugin.getProxy().getReconnectHandler() != null) {
-            kickedFrom = Main.Plugin.getProxy().getReconnectHandler().getServer(ev.getPlayer());
+        } else if (ProxyServer.getInstance().getReconnectHandler() != null) {
+            kickedFrom = ProxyServer.getInstance().getReconnectHandler().getServer(ev.getPlayer());
         } else {
             kickedFrom = AbstractReconnectHandler.getForcedHost((PendingConnection) ev.getPlayer().getPendingConnection());
             if (kickedFrom == null) {

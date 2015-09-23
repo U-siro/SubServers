@@ -9,8 +9,8 @@ import net.ME1312.SubServer.Main;
 public class NavCommand extends Command {
 	private Main Main;
 	
-	public NavCommand(Main Main) {
-        super("go");
+	public NavCommand(Main Main, String Command) {
+        super(Command);
 		this.Main = Main;
     }
 	
