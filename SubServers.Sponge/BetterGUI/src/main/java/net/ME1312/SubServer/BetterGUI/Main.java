@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-@Plugin(id="SubServersBetterGUI", name="SubServers BetterGUI", version="1.8.8f", dependencies = "required-after:MinecraftGUIServer;required-after:SubServers")
+@Plugin(id="SubServersBetterGUI", name="SubServers BetterGUI", version="1.8.8g", dependencies = "required-after:MinecraftGUIServer;required-after:SubServers")
 public class Main {
     public File dataFolder;
 
