@@ -5,7 +5,6 @@ import net.ME1312.SubServer.Main;
 import net.ME1312.SubServer.Executable.SubServerCreator;
 import net.ME1312.SubServer.Executable.SubServerCreator.ServerTypes;
 import net.ME1312.SubServer.Executable.Executable;
-import net.ME1312.SubServer.GUI.GUI;
 import net.ME1312.SubServer.Libraries.Version.Version;
 
 import org.bukkit.Material;

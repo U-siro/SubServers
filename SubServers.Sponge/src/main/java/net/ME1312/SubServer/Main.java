@@ -34,7 +34,7 @@ import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 
-@Plugin(id="SubServers", name="SubServers", version="1.8.8h")
+@Plugin(id="SubServers", name="SubServers", version="1.8.8i")
 public class Main {
     public static SubServerCreator ServerCreator;
 
@@ -65,7 +65,7 @@ public class Main {
     @Listener
     public void onPluginSetup(GamePreInitializationEvent event) {
         /* Pre Setup Actions */
-        lprefix = "[" + Plugin.getName() + "] ";
+        lprefix = Plugin.getName() + " \u00BB ";
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
@@ -93,7 +93,7 @@ public class Main {
             if (!new File(dataFolder, "config.conf").exists()) {
                 copyFromJar("config.conf", new File(dataFolder, "config.conf").getPath());
                 log.info("Created Config.conf!");
-                
+
             } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build().load()).getNode("Settings", "config-version").getString().equalsIgnoreCase("1.8.8e+")) {
                 Files.move(new File(dataFolder, "config.conf"), new File(dataFolder, "old-config." + Math.round(Math.random() * 100000.0) + ".conf"));
                 copyFromJar("config.conf", new File(dataFolder, "config.conf").getPath());
@@ -102,7 +102,7 @@ public class Main {
             if (!new File(dataFolder, "lang.conf").exists()) {
                 copyFromJar("lang.conf", new File(dataFolder, "lang.conf").getPath());
                 log.info("Created Lang.conf!");
-                
+
             } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load()).getNode("config-version").getString().equalsIgnoreCase("1.8.8e+")) {
                 Files.move(new File(dataFolder, "lang.conf"), new File(dataFolder, "old-lang." + Math.round(Math.random() * 100000.0) + ".conf"));
                 copyFromJar("lang.conf", new File(dataFolder, "lang.conf").getPath());
@@ -112,7 +112,7 @@ public class Main {
             configManager = (HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build();
             config = configManager.load();
             lang = (HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load();
-        
+
         } catch (IOException e) {
             log.error(e.getStackTrace().toString());
         }

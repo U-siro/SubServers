@@ -1,6 +1,5 @@
 name: 'SubServers'
 main: 'net.ME1312.SubServer.Load'
-version: '1.8.8h'
-depend: cmd_server
+version: '1.8.8i'
 author: ME1312
 website: 'https://www.spigotmc.org/resources/subservers.11264/'

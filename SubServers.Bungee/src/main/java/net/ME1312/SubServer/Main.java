@@ -25,7 +25,7 @@ public class Main {
 	}
 	
 	protected void EnablePlugin() {
-		lprefix = "[" + Plugin.getDescription().getName() + "] ";
+		lprefix = Plugin.getDescription().getName() + " \u00BB ";
 		
 		ProxyServer.getInstance().getPluginManager().registerCommand(Plugin, new SubDebugCommand(this, "subconf@proxy"));
 		ProxyServer.getInstance().getPluginManager().registerCommand(Plugin, new NavCommand(this, "go"));

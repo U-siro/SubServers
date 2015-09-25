@@ -9,19 +9,19 @@ public class VersionTokenizer {
  private String _suffix;
  private boolean _hasValue;
 
- public int getNumber() {
+ protected int getNumber() {
      return _number;
  }
 
- public String getSuffix() {
+ protected String getSuffix() {
      return _suffix;
  }
 
- public boolean hasValue() {
+ protected boolean hasValue() {
      return _hasValue;
  }
 
- public VersionTokenizer(String versionString) {
+ protected VersionTokenizer(String versionString) {
      if (versionString == null)
          throw new IllegalArgumentException("versionString is null");
 
@@ -29,7 +29,7 @@ public class VersionTokenizer {
      _length = versionString.length();
  }
 
- public boolean MoveNext() {
+ protected boolean MoveNext() {
      _number = 0;
      _suffix = "";
      _hasValue = false;

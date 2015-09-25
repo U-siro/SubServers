@@ -83,9 +83,9 @@ Lang:
         'Reset-Storage': 'Reset Proxy Settings'
         'Teleport': 'Sent $Player$ to $Server$'
     Debug:
-        'Server-Logging-Prefix': '$Server$ ---> '
-        'Server-Logging-Start': 'Running: $Shell$ for $Server$'
-        'Server-Logging-End': 'Terminated $Server$ Shell.'
+        'Server-Logging-Prefix': '$Server$ \u2192 '
+        'Server-Logging-Start': 'Running: \"$Shell$\" for $Server$'
+        'Server-Logging-End': 'Terminated $Server$'
         'Server-Logging-Start-Error': 'Error: Invalid Server Config'
         'Config-Reload-Warn': 'Reloading Config... This may take some time...'
         'Config-Reload': 'Config Reloaded!'
