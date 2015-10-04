@@ -71,7 +71,7 @@ public class Main {
         if (!(new File(Plugin.getDataFolder() + File.separator + "config.yml").exists())) {
             copyFromJar("config.yml", Plugin.getDataFolder() + File.separator + "config.yml");
             Bukkit.getLogger().info(lprefix + "Created Config.yml!");
-        } else if (!confmanager.getNewConfig("config.yml").getString("Settings.config-version").equalsIgnoreCase("1.8.8e+")) {
+        } else if (!confmanager.getNewConfig("config.yml").getString("Settings.config-version").equalsIgnoreCase("1.8.8j+")) {
             try {
                 Files.move(new File(Plugin.getDataFolder() + File.separator + "config.yml"), new File(Plugin.getDataFolder() + File.separator + "old-config." + Math.round(Math.random() * 100000) + ".yml"));
                 copyFromJar("config.yml", Plugin.getDataFolder() + File.separator + "config.yml");
@@ -83,7 +83,7 @@ public class Main {
         if (!(new File(Plugin.getDataFolder() + File.separator + "lang.yml").exists())) {
             copyFromJar("lang.yml", Plugin.getDataFolder() + File.separator + "lang.yml");
             Bukkit.getLogger().info(lprefix + "Created Lang.yml!");
-        } else if (!confmanager.getNewConfig("lang.yml").getString("config-version").equalsIgnoreCase("1.8.8e+")) {
+        } else if (!confmanager.getNewConfig("lang.yml").getString("config-version").equalsIgnoreCase("1.8.8j+")) {
             try {
                 Files.move(new File(Plugin.getDataFolder() + File.separator + "lang.yml"), new File(Plugin.getDataFolder() + File.separator + "old-lang." + Math.round(Math.random() * 100000) + ".yml"));
                 copyFromJar("lang.yml", Plugin.getDataFolder() + File.separator + "lang.yml");
@@ -107,7 +107,7 @@ public class Main {
          * Registers PIDs & Shells
          */
         PIDs.put("~Proxy", 0);
-        Servers.put(0, new SubServer(config.getBoolean("Proxy.enabled"), "~Proxy", 0, 25565, config.getBoolean("Proxy.log"), new File(config.getRawString("Proxy.dir")),
+        Servers.put(0, new SubServer(config.getBoolean("Proxy.enabled"), "~Proxy", 0, 25565, config.getBoolean("Proxy.log"), false, new File(config.getRawString("Proxy.dir")),
                 new Executable(config.getRawString("Proxy.shell")), 0, false, this));
 
         int i = 0;
@@ -116,7 +116,7 @@ public class Main {
             i++;
             PIDs.put(item, i);
             Servers.put(i, new SubServer(config.getBoolean("Servers." + item + ".enabled"), item, i, config.getInt("Servers." + item + ".port"), config.getBoolean("Servers." + item + ".log"),
-                    new File(config.getRawString("Servers." + item + ".dir")), new Executable(config.getRawString("Servers." + item + ".shell")), config.getDouble("Servers." + item + ".stop-after"), false, this));
+                    config.getBoolean("Servers." + item + ".use-shared-chat"), new File(config.getRawString("Servers." + item + ".dir")), new Executable(config.getRawString("Servers." + item + ".shell")), config.getDouble("Servers." + item + ".stop-after"), false, this));
             if (config.getBoolean("Servers." + item + ".enabled") && config.getBoolean("Servers." + item + ".run-on-launch")) {
                 Servers.get(i).start();
             }

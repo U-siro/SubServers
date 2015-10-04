@@ -31,3 +31,8 @@ crashlytics-build.properties
 # Hide github Files
 .gitignore
 README.md
+
+# Hide Unfinished Project Files
+/SubServers.Sponge/
+/artifacts/SubServers.Sponge.jar
+/artifacts/SubServers.Sponge.BetterGUI.jar

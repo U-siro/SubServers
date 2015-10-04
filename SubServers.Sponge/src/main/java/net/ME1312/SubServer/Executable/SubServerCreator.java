@@ -1,8 +1,9 @@
 package net.ME1312.SubServer.Executable;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import net.ME1312.SubServer.Libraries.ChatColor;
 import org.spongepowered.api.entity.living.player.Player;
@@ -24,6 +25,8 @@ public class SubServerCreator {
     private int Port;
     private File Dir;
     private Executable Exec;
+    private int Memory;
+    private String Jar;
     private Version Version;
     private Player Player;
     private ServerTypes Type;
@@ -31,15 +34,44 @@ public class SubServerCreator {
     private boolean Running;
     private Process Process;
 
-    public SubServerCreator(String Name, int Port, File Dir, Executable Exec, Player Player, ServerTypes Type, Version Version, Main Main) {
+    public SubServerCreator(String Name, int Port, File Dir, ServerTypes Type, Version Version, int Memory, Player Player, Main Main) {
         this.Name = Name;
         this.Port = Port;
         this.Dir = Dir;
-        this.Exec = Exec;
+        this.Memory = Memory;
         this.Version = Version;
         this.Player = Player;
         this.Type = Type;
         this.Main = Main;
+
+        if (!Dir.exists()) Dir.mkdirs();
+
+        if (Type == ServerTypes.spigot) {
+            this.Jar = "Spigot.jar";
+            this.Exec = new Executable("java -Xmx" + Memory + "M -Djline.terminal=jline.UnsupportedTerminal -Dcom.mojang.eula.agree=true -jar " + Jar + " -p " + Port + " -o false -h " + Main.config.getNode("Settings", "Server-IP").getString());
+
+        } else if (Type == ServerTypes.bukkit) {
+            this.Jar = "Bukkit.jar";
+            this.Exec = new Executable("java -Xmx" + Memory + "M -jar " + Jar + " -Djline.terminal=jline.UnsupportedTerminal -p " + Port + " -o false -h " + Main.config.getNode("Settings", "Server-IP").getString());
+
+            try {
+                GenerateEULA();
+
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+        } else if (Type == ServerTypes.vanilla) {
+            this.Jar = "Vanilla.jar";
+            this.Exec = new Executable("java -Xmx" + Memory + "M -jar " + Jar + " nogui");
+
+            try {
+                GenerateEULA();
+                GenerateProperties();
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public boolean run() {
@@ -54,6 +86,56 @@ public class SubServerCreator {
             Main.log.error(e.getStackTrace().toString());
             return false;
         }
+    }
+
+    private void GenerateEULA() throws FileNotFoundException, UnsupportedEncodingException {
+        PrintWriter writer = new PrintWriter(new File(Dir, "eula.txt"), "UTF-8");
+
+        writer.println("#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).");
+        writer.println("#" + new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy").format(Calendar.getInstance().getTime()));
+        writer.println("eula=true");
+        writer.close();
+    }
+
+    private void GenerateProperties() throws FileNotFoundException, UnsupportedEncodingException {
+        PrintWriter writer = new PrintWriter(new File(Dir, "server.properties"), "UTF-8");
+
+        writer.println("#Minecraft server properties");
+        writer.println("#" + new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy").format(Calendar.getInstance().getTime()));
+        writer.println("generator-settings=");
+        writer.println("op-permission-level=4");
+        writer.println("allow-nether=true");
+        writer.println("resource-pack-hash=");
+        writer.println("level-name=world");
+        writer.println("enable-query=false");
+        writer.println("allow-flight=false");
+        writer.println("announce-player-achievements=true");
+        writer.println("server-port=" + Port);
+        writer.println("max-world-size=29999984");
+        writer.println("level-type=DEFAULT");
+        writer.println("enable-rcon=false");
+        writer.println("level-seed=");
+        writer.println("force-gamemode=false");
+        writer.println("server-ip=" + Main.config.getNode("Settings", "Server-IP").getString());
+        writer.println("network-compression-threshold=256");
+        writer.println("max-build-height=256");
+        writer.println("spawn-npcs=true");
+        writer.println("white-list=false");
+        writer.println("spawn-animals=true");
+        writer.println("snooper-enabled=true");
+        writer.println("online-mode=false");
+        writer.println("resource-pack=");
+        writer.println("pvp=true");
+        writer.println("difficulty=1");
+        writer.println("enable-command-block=false");
+        writer.println("gamemode=0");
+        writer.println("player-idle-timeout=0");
+        writer.println("max-players=20");
+        writer.println("max-tick-time=60000");
+        writer.println("spawn-monsters=true");
+        writer.println("generate-structures=true");
+        writer.println("view-distance=10");
+        writer.println("motd=A Minecraft Server");
     }
 
     private void run(boolean value) {
@@ -95,7 +177,7 @@ public class SubServerCreator {
                                 if (Process.exitValue() == 0) {
                                     Player.sendMessage(Texts.of(ChatColor.AQUA + Main.lprefix + Main.lang.getNode("Lang", "Create-Server", "Server-Create-Done").getString()));
                                     final int PID = (Main.SubServers.size() + 1);
-                                    Main.Servers.put(PID, new SubServer(true, Name, PID, Port, true, Dir, Exec, PID, false, Main));
+                                    Main.Servers.put(PID, new SubServer(true, Name, PID, Port, true, true, Dir, Exec, PID, false, Main));
                                     Main.PIDs.put(Name, PID);
                                     Main.SubServers.add(Name);
 
@@ -106,6 +188,7 @@ public class SubServerCreator {
                                     Main.config.getNode("Servers", Name, "port").setValue(Port);
                                     Main.config.getNode("Servers", Name, "run-on-launch").setValue(false);
                                     Main.config.getNode("Servers", Name, "log").setValue(true);
+                                    Main.config.getNode("Servers", Name, "use-shared-chat").setValue(true);
                                     Main.config.getNode("Servers", Name, "dir").setValue(Dir.getPath());
                                     Main.config.getNode("Servers", Name, "shell").setValue(Exec.toString());
                                     Main.config.getNode("Servers", Name, "stop-after").setValue(0);
@@ -151,7 +234,7 @@ public class SubServerCreator {
                                 if (Process.exitValue() == 0) {
                                     Player.sendMessage(Texts.of(ChatColor.AQUA + Main.lprefix + Main.lang.getNode("Lang", "Create-Server", "Server-Create-Done").getString().replace("$Server$", Name)));
                                     final int PID = (Main.SubServers.size() + 1);
-                                    Main.Servers.put(PID, new SubServer(true, Name, PID, Port, true, Dir, Exec, PID, false, Main));
+                                    Main.Servers.put(PID, new SubServer(true, Name, PID, Port, true, true, Dir, Exec, PID, false, Main));
                                     Main.PIDs.put(Name, PID);
                                     Main.SubServers.add(Name);
 
@@ -161,6 +244,7 @@ public class SubServerCreator {
                                     Main.config.getNode("Servers", Name, "enabled").setValue(true);
                                     Main.config.getNode("Servers", Name, "port").setValue(Port);
                                     Main.config.getNode("Servers", Name, "run-on-launch").setValue(false);
+                                    Main.config.getNode("Servers", Name, "use-shared-chat").setValue(true);
                                     Main.config.getNode("Servers", Name, "log").setValue(true);
                                     Main.config.getNode("Servers", Name, "dir").setValue(Dir.getPath());
                                     Main.config.getNode("Servers", Name, "shell").setValue(Exec.toString());

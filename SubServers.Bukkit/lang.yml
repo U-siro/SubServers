@@ -82,6 +82,7 @@ Lang:
         'Remove-Server': 'Removed Server: '
         'Reset-Storage': 'Reset Proxy Settings'
         'Teleport': 'Sent $Player$ to $Server$'
+        'Chat-Format': '[$server$] <$displayname$> $message$'
     Debug:
         'Server-Logging-Prefix': '$Server$ \u2192 '
         'Server-Logging-Start': 'Running: \"$Shell$\" for $Server$'
@@ -90,4 +91,4 @@ Lang:
         'Config-Reload-Warn': 'Reloading Config... This may take some time...'
         'Config-Reload': 'Config Reloaded!'
 # Language File Version If invalid, this will Regenerate
-config-version: 1.8.8e+
+config-version: 1.8.8j+

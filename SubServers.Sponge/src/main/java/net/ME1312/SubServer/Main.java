@@ -34,7 +34,7 @@ import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 
-@Plugin(id="SubServers", name="SubServers", version="1.8.8i")
+@Plugin(id="SubServers", name="SubServers", version="1.8.8j")
 public class Main {
     public static SubServerCreator ServerCreator;
 
@@ -94,7 +94,7 @@ public class Main {
                 copyFromJar("config.conf", new File(dataFolder, "config.conf").getPath());
                 log.info("Created Config.conf!");
 
-            } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build().load()).getNode("Settings", "config-version").getString().equalsIgnoreCase("1.8.8e+")) {
+            } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build().load()).getNode("Settings", "config-version").getString().equalsIgnoreCase("1.8.8f+")) {
                 Files.move(new File(dataFolder, "config.conf"), new File(dataFolder, "old-config." + Math.round(Math.random() * 100000.0) + ".conf"));
                 copyFromJar("config.conf", new File(dataFolder, "config.conf").getPath());
                 log.info("Updated Config.conf!");
@@ -119,7 +119,7 @@ public class Main {
 
         /* Register SubServers */
         PIDs.put("~Proxy", 0);
-        Servers.put(0, new SubServer(config.getNode("Proxy", "enabled").getBoolean(), "~Proxy", 0, 25565, config.getNode("Proxy", "log").getBoolean(), new File(config.getNode("Proxy", "dir").getString()), new Executable(config.getNode("Proxy", "shell").getString()), 0, false, this));
+        Servers.put(0, new SubServer(config.getNode("Proxy", "enabled").getBoolean(), "~Proxy", 0, 25565, config.getNode("Proxy", "log").getBoolean(), false, new File(config.getNode("Proxy", "dir").getString()), new Executable(config.getNode("Proxy", "shell").getString()), 0, false, this));
 
         List SubServersStore = new ArrayList<Object>();
         SubServersStore.addAll(config.getNode("Servers").getChildrenMap().keySet());
@@ -132,7 +132,7 @@ public class Main {
             SubServers.add(item);
             PIDs.put(item, i);
             Servers.put(i, new SubServer(config.getNode("Servers", item, "enabled").getBoolean(), item, i, config.getNode("Servers", item, "port").getInt(),
-                    config.getNode("Servers", item, "log").getBoolean(), new File(config.getNode("Servers", item, "dir").getString()),
+                    config.getNode("Servers", item, "log").getBoolean(), config.getNode("Servers", item, "use-shared-chat").getBoolean(), new File(config.getNode("Servers", item, "dir").getString()),
                     new Executable(config.getNode("Servers", item, "shell").getString()), config.getNode("Servers", item, "stop-after").getDouble(), false, this));
         }
     }

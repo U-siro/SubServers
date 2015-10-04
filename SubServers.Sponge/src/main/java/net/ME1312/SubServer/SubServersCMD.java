@@ -290,7 +290,7 @@ public class SubServersCMD implements CommandExecutor {
                     }
 
                     if (Main.Servers.get(0) == null) {
-                        Main.Servers.put(0, new SubServer(Main.config.getNode("Proxy", "enabled").getBoolean(), "~Proxy", 0, 25565, Main.config.getNode("Proxy", "log").getBoolean(),
+                        Main.Servers.put(0, new SubServer(Main.config.getNode("Proxy", "enabled").getBoolean(), "~Proxy", 0, 25565, Main.config.getNode("Proxy", "log").getBoolean(), false,
                                 new File(Main.config.getNode("Proxy", "dir").getString()), new Executable(Main.config.getNode("Proxy", "shell").toString()), 0, false, Main));
                     }
 
@@ -326,7 +326,7 @@ public class SubServersCMD implements CommandExecutor {
                                     API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Teleport " + StringEscapeUtils.unescapeJava(Main.lang.getNode("Lang", "Proxy", "Teleport").getString().replace(" ", "%20")));
                                     Thread.sleep(500);
 
-                                    API.getSubServer(0).sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Main.config.getNode("Settings", "Lobby-Port").getString());
+                                    API.getSubServer(0).sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Main.config.getNode("Settings", "Lobby-Port").getString() + " true");
                                     Thread.sleep(500);
                                 } catch (InterruptedException e) {
                                     Main.log.error(e.getStackTrace().toString());
@@ -335,18 +335,11 @@ public class SubServersCMD implements CommandExecutor {
 
                             List SubServersStore = new ArrayList<Object>();
                             SubServersStore.addAll(Main.config.getNode("Servers").getChildrenMap().keySet());
+
                             Collections.sort(SubServersStore);
 
                             for(Iterator<Object> items = SubServersStore.iterator(); items.hasNext(); ) {
                                 String item = ((String) items.next());
-                                if (API.getSubServer(0).isRunning()) {
-                                    API.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Main.config.getNode("Servers", item, "port").getString());
-                                    try {
-                                        Thread.sleep(500);
-                                    } catch (InterruptedException e) {
-                                        Main.log.error(e.getStackTrace().toString());
-                                    }
-                                }
                                 do {
                                     i++;
                                 } while (Main.Servers.keySet().contains(i));
@@ -357,8 +350,20 @@ public class SubServersCMD implements CommandExecutor {
                                     Main.SubServers.add(item);
                                     Main.PIDs.put(item, i);
                                     Main.Servers.put(i, new SubServer(Main.config.getNode("Servers", item, "enabled").getBoolean(), item, i, Main.config.getNode("Servers", item, "port").getInt(),
-                                            Main.config.getNode("Servers", item, "log").getBoolean(), new File(Main.config.getNode("Servers", item, "dir").getString()),
+                                            Main.config.getNode("Servers", item, "log").getBoolean(), Main.config.getNode("Servers", item, "use-shared-chat").getBoolean(), new File(Main.config.getNode("Servers", item, "dir").getString()),
                                             new Executable(Main.config.getNode("Servers", item, "shell").getString()), Main.config.getNode("Servers", item, "stop-after").getDouble(), false, Main));
+                                }
+                            }
+
+                            for(Iterator<String> str = Main.SubServers.iterator(); str.hasNext(); ) {
+                                String item = str.next();
+                                if (API.getSubServer(0).isRunning()) {
+                                    API.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + API.getSubServer(item).Port + " " + API.getSubServer(item).SharedChat);
+                                    try {
+                                        Thread.sleep(500);
+                                    } catch (InterruptedException e) {
+                                        Main.log.error(e.getStackTrace().toString());
+                                    }
                                 }
                             }
                             if (sender instanceof Player) {

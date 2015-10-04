@@ -22,7 +22,7 @@ public class NavCommand extends Command {
 		} else if (args.length < 1) {
 			String String = "";
 			if (Main.ServerInfo.keySet().size() > 0) String = Main.ServerInfo.keySet().toString().replace("[", "").replace("]", "") + ", ";
-			if (ProxyServer.getInstance().getServers().keySet().size() > 0) String = String + ProxyServer.getInstance().getServers().keySet().toString().replace("{", "").replace("}", "") + ", ";
+			if (ProxyServer.getInstance().getServers().keySet().size() > 0) String = String + (ProxyServer.getInstance().getServers().keySet().toString().replace("{", "").replace("}", "") + ", ").replace("default, ", "");
 			if (Main.PlayerServerInfo.keySet().size() > 0) String = String + 
 					Main.lang.get("Lang.Commands.Teleport-Server-List").split("\\|\\|\\|")[2].replace("$int$", Integer.toString(Main.PlayerServerInfo.keySet().size()));
 			
@@ -35,7 +35,7 @@ public class NavCommand extends Command {
 				ProxyServer.getInstance().getLogger().info(String);
 			}
 
-		} else if (ProxyServer.getInstance().getServers().keySet().contains(args[0])) {
+		} else if (ProxyServer.getInstance().getServers().keySet().contains(args[0]) && !args[0].equalsIgnoreCase("default")) {
 			if (args.length > 1) {
 				if (ProxyServer.getInstance().getPlayer(sender.getName()) == null || ProxyServer.getInstance().getPlayer(sender.getName()).hasPermission("bungeecord.command.send") || ProxyServer.getInstance().getPlayer(sender.getName()).hasPermission("SubServers.Teleport.Others")) {
 					if (ProxyServer.getInstance().getPlayer(args[1]) == null) {

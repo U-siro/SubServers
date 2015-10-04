@@ -1,15 +1,15 @@
 # SubServer Plugin Configuration
 # This is The Main Config for this Plugin
 #
-# Where is git-bash.exe Located? Mac/Linux users can ignore this option
+# Where is git Located? Mac/Linux users can ignore this option
 Settings:
     Server-Creation:
         git-dir: 'C:\Program Files\Git'
         log: true
-    config-version: 1.8.8e+
+    config-version: 1.8.8j+
     GUI:
         Enabled: true
-        Trigger-Item: 'EMERALD_ORE'
+        Trigger-Item: '129'
     Server-IP: '127.0.0.1'
     Lobby-Port: 25565
 #
@@ -28,6 +28,7 @@ Servers:
         enabled: false
         port: 25565
         run-on-launch: false
+        use-shared-chat: true
         log: true
         dir: 'path/to/your/folder'
         shell: './start.sh'

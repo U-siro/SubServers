@@ -121,33 +121,19 @@ public class API {
 	 * @param Port Port of SubServer
 	 * @param Log Toggle Output to console
 	 * @param Dir Shell Directory
+     * @param SharedChat Toggles Shared Chat
 	 * @param Exec Executable String or File
 	 * @param StopAfter Stop after x minutes
 	 * @param Temporary Toggles Temporary Server actions
 	 */
-	public static void addServer(final String Name, int Port, boolean Log, File Dir, Executable Exec, double StopAfter, boolean Temporary) {
+	public static void addServer(final String Name, int Port, boolean Log, boolean SharedChat, File Dir, Executable Exec, double StopAfter, boolean Temporary) {
 			final int PID = (Main.SubServers.size() + 1);
-			Main.Servers.put(PID, new SubServer(true, Name, PID, Port, Log, Dir, Exec, StopAfter, Temporary, Main));
+			Main.Servers.put(PID, new SubServer(true, Name, PID, Port, Log, SharedChat, Dir, Exec, StopAfter, Temporary, Main));
 			Main.PIDs.put(Name, PID);
 			Main.SubServers.add(Name);
 
-			if ((new File(new File(Main.dataFolder, "cache"), "__style.css")).exists()) {
-                try {
-                    PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(new File(new File(Main.dataFolder, "cache"), "__style.css"), true)));
-
-                    writer.println("root > #__server_list_window > list > #" + Name + " {");
-                    writer.println("    VALUE: " + Name + ";");
-                    writer.println("}");
-                    writer.println();
-                    writer.close();
-
-                } catch (IOException e) {
-                    Main.log.error(e.getStackTrace().toString());
-                }
-            }
-
 			Main.Servers.get(PID).start();
-			if (getSubServer(0).isRunning()) getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getString("Settings.Server-IP") + " " + Port);
+			if (getSubServer(0).isRunning()) getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getString("Settings.Server-IP") + " " + Port + " " + SharedChat);
 			
 			if (Temporary) {
 				Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
@@ -176,33 +162,20 @@ public class API {
 	 * @param Name Name of SubServer
 	 * @param Port Port of SubServer
 	 * @param Log Toggle Output to console
+     * @param SharedChat Toggles Shared Chat
 	 * @param Dir Shell Directory
 	 * @param Exec Executable String or File
 	 * @param StopAfter Stop after x minutes
 	 * @param Temporary Toggles Temporary Server actions
 	 */
-	public static void addServer(Player Sender, final String Name, int Port, boolean Log, File Dir, Executable Exec, double StopAfter, boolean Temporary) {
+	public static void addServer(Player Sender, final String Name, int Port, boolean Log, boolean SharedChat, File Dir, Executable Exec, double StopAfter, boolean Temporary) {
 			final int PID = (Main.SubServers.size() + 1);
-			Main.Servers.put(PID, new SubServer(true, Name, PID, Port, Log, Dir, Exec, StopAfter, Temporary, Main));
-		Main.PIDs.put(Name, PID);
+			Main.Servers.put(PID, new SubServer(true, Name, PID, Port, Log, SharedChat, Dir, Exec, StopAfter, Temporary, Main));
+		    Main.PIDs.put(Name, PID);
 			Main.SubServers.add(Name);
 
-            if ((new File(new File(Main.dataFolder, "cache"), "__style.css")).exists()) {
-                try {
-                    PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(new File(new File(Main.dataFolder, "cache"), "__style.css"), true)));
-
-                    writer.println("root > #__server_list_window > list > #" + Name + " {");
-                    writer.println("    VALUE: " + Name + ";");
-                    writer.println("}");
-                    writer.println();
-                    writer.close();
-                } catch (IOException e) {
-                    Main.log.error(e.getStackTrace().toString());
-                }
-            }
-
 			Main.Servers.get(PID).start(Sender);
-		getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getString("Settings.Server-IP") + " " + Port);
+		    getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getString("Settings.Server-IP") + " " + Port + " " + SharedChat);
 
 			if (Temporary) {
 				Main.game.getScheduler().createTaskBuilder().async().submit(new Runnable() {
@@ -221,12 +194,6 @@ public class API {
 					}
 				});
 			}
-	}
-
-	public static void createServer(Player Sender, String Name, int Port, File Dir, Executable Exec, ServerTypes Type, Version Version) {
-		if (Main.ServerCreator == null || !Main.ServerCreator.isRunning()) {
-			Main.ServerCreator = new SubServerCreator(Name, Port, Dir, Exec, Sender, Type, Version, Main);
-		}
 	}
 	
 	/**

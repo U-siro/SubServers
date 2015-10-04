@@ -249,7 +249,95 @@ public class SubServersCMD implements CommandExecutor {
 						Bukkit.getLogger().info("/SubServer Kill <Server>");
 					}
 				}
-			} else if (args[0].equalsIgnoreCase("reload")) {
+			} else if (args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("teleport")) {
+                if (args.length == 3) {
+                    if (!(Main.SubServers.contains(args[1]) || args[1].equalsIgnoreCase("~Lobby"))) {
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Config-Error"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Config-Error"));
+                        }
+                    } else if (!(sender instanceof Player) || (((Player)sender).hasPermission("subserver.command.teleport.others.*") || ((Player)sender).hasPermission("subserver.command.teleport.others." + args[1]))) {
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
+                        }
+                    } else if (!(API.getSubServer(args[1]).isRunning() || args[1].equalsIgnoreCase("~Lobby"))) {
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
+                        }
+                    } else if (!API.getSubServer("~Proxy").isRunning()) {
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
+                        }
+                    } else {
+                        if (args[1].equalsIgnoreCase("~Lobby")) {
+                            API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + args[2] + " ~Lobby");
+                        } else {
+                            API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + args[2] + " " + args[1]);
+                        }
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport"));
+                        }
+                    }
+                } else if (args.length == 2) {
+                    if (!(Main.SubServers.contains(args[1]) || args[1].equalsIgnoreCase("~Lobby"))) {
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Config-Error"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Config-Error"));
+                        }
+                    } else if (!(sender instanceof Player) || (((Player)sender).hasPermission("subserver.command.teleport." + args[1]) || ((Player)sender).hasPermission("subserver.command.teleport.*"))) {
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
+                        }
+                    } else if (!(API.getSubServer(args[1]).isRunning() || args[1].equalsIgnoreCase("~Lobby"))) {
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
+                        }
+                    } else if (!API.getSubServer("~Proxy").isRunning()) {
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
+                        }
+                    } else if (!(sender instanceof Player)) {
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Console-Error"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Console-Error"));
+                        }
+                    } else {
+                        if (args[1].equalsIgnoreCase("~Lobby")) {
+                            API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + ((Player) sender).getName() + " ~Lobby");
+                        } else {
+                            API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + ((Player) sender).getName() + " " + args[1]);
+                        }
+                        if (sender instanceof Player) {
+                            ((Player)sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport"));
+                        } else {
+                            Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport"));
+                        }
+                    }
+                } else if (sender instanceof Player) {
+                    ((Player)sender).sendMessage("Usage:");
+                    ((Player)sender).sendMessage("/SubServer Tp <Server> [Player]");
+                } else {
+                    Bukkit.getLogger().info("Usage:");
+                    Bukkit.getLogger().info("/SubServer Tp <Server> <Player>");
+                }
+            } else if (args[0].equalsIgnoreCase("reload")) {
 				if (!(sender instanceof Player) || ((Player) sender).hasPermission("SubServer.Command.Reload")) {
 					if (sender instanceof Player) {
 						((Player) sender).sendMessage(ChatColor.GOLD + Main.lprefix + Main.lang.getString("Lang.Debug.Config-Reload-Warn"));
@@ -280,7 +368,7 @@ public class SubServersCMD implements CommandExecutor {
 					Main.lang.reloadConfig();
 					
 					if (Main.Servers.get(0) == null) {
-						Main.Servers.put(0, new SubServer(Main.config.getBoolean("Proxy.enabled"), "~Proxy", 0, 25565, Main.config.getBoolean("Proxy.log"), new File(Main.config.getRawString("Proxy.dir")),
+						Main.Servers.put(0, new SubServer(Main.config.getBoolean("Proxy.enabled"), "~Proxy", 0, 25565, Main.config.getBoolean("Proxy.log"), false, new File(Main.config.getRawString("Proxy.dir")),
 								new Executable(Main.config.getRawString("Proxy.shell")), 0, false, Main));
 					}
 					
@@ -311,10 +399,12 @@ public class SubServersCMD implements CommandExecutor {
 									Thread.sleep(500);
 									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Reset-Storage " + Main.lang.getString("Lang.Proxy.Reset-Storage").replace(" ", "%20"));
 									Thread.sleep(500);
+                                    API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Chat-Format " + Main.lang.getString("Lang.Proxy.Chat-Format").replace(" ", "%20"));
+                                    Thread.sleep(500);
 									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Teleport " + Main.lang.getString("Lang.Proxy.Teleport").replace(" ", "%20"));
 									Thread.sleep(500);
 									
-									API.getSubServer(0).sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getString("Settings.Server-IP") + " " + Main.config.getString("Settings.Lobby-Port"));
+									API.getSubServer(0).sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getString("Settings.Server-IP") + " " + Main.config.getString("Settings.Lobby-Port") + " true");
 									Thread.sleep(500);
 								} catch (InterruptedException e) {
 									e.printStackTrace();
@@ -322,14 +412,6 @@ public class SubServersCMD implements CommandExecutor {
 							}
 							for(Iterator<String> str = Main.config.getConfigurationSection("Servers").getKeys(false).iterator(); str.hasNext(); ) {
 							    String item = str.next();
-							    if (API.getSubServer(0).isRunning()) {
-							    	API.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getString("Settings.Server-IP") + " " + Main.config.getString("Servers." + item + ".port"));
-							    	try {
-										Thread.sleep(500);
-									} catch (InterruptedException e) {
-										e.printStackTrace();
-									}
-							    }
 							    do {
 							   		i++;
 						    	} while (Main.Servers.keySet().contains(i));
@@ -340,10 +422,23 @@ public class SubServersCMD implements CommandExecutor {
 							    	Main.SubServers.add(item);
 							    	Main.PIDs.put(item, i);
 							    	Main.Servers.put(i, new SubServer(Main.config.getBoolean("Servers." + item + ".enabled"), item, i, Main.config.getInt("Servers." + item + ".port"), 
-							    			Main.config.getBoolean("Servers." + item + ".log"), new File(Main.config.getRawString("Servers." + item + ".dir")), 
+							    			Main.config.getBoolean("Servers." + item + ".log"), Main.config.getBoolean("Servers." + item + ".use-shared-chat"), new File(Main.config.getRawString("Servers." + item + ".dir")),
 							    			new Executable(Main.config.getRawString("Servers." + item + ".shell")), Main.config.getDouble("Servers." + item + ".stop-after"), false, Main));
 							    }
 							}
+
+                            for(Iterator<String> str = Main.SubServers.iterator(); str.hasNext(); ) {
+                                String item = str.next();
+                                if (API.getSubServer(0).isRunning()) {
+                                    API.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getString("Settings.Server-IP") + " " + API.getSubServer(item).Port + " " + API.getSubServer(item).SharedChat);
+                                    try {
+                                        Thread.sleep(500);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
 							if (sender instanceof Player) {
 								((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Debug.Config-Reload"));
 							}
@@ -381,7 +476,7 @@ public class SubServersCMD implements CommandExecutor {
 					Bukkit.getLogger().info("Start Server: /SubServer Start <Server>");
 					Bukkit.getLogger().info("Send Command: /SubServer Cmd <Server> <Command> [Args...]");
 					Bukkit.getLogger().info("Plugin Version: /SubServer Version");
-					if (API.getSubServer(0).isRunning()) Bukkit.getLogger().info("Teleport: /Go <Server> <Player>");
+					if (API.getSubServer(0).isRunning()) Bukkit.getLogger().info("Teleport: /Sub TP <Server> <Player>");
 				}
 			} else if (Main.config.getBoolean("Settings.GUI.enabled") && (sender instanceof Player)) {
 				if (Main.SubServers.contains(args[0])) {
@@ -397,20 +492,8 @@ public class SubServersCMD implements CommandExecutor {
 				}
 			}
 		} else {
-			if ((sender instanceof Player) && ((Player) sender).hasPermission("SubServer.Command")) {
-				if (Main.config.getBoolean("Settings.GUI.Enabled")) {
-					new GUI((Player) sender, 0, null, Main);
-				} else {
-					((Player) sender).sendMessage("Subservers Command List:");
-					((Player) sender).sendMessage("GUI: /Subserver [Server]");
-					((Player) sender).sendMessage("Reload Plugin: /SubServer Reload");
-					((Player) sender).sendMessage("Stop Server: /SubServer Stop <Server>");
-					((Player) sender).sendMessage("Kill Server: /SubServer Kill <Server>");
-					((Player) sender).sendMessage("Start Server: /SubServer Start <Server>");
-					((Player) sender).sendMessage("Send Command: /SubServer Cmd <Server> <Command> " + ChatColor.ITALIC + "[Args...]");
-					((Player) sender).sendMessage("Plugin Version: /SubServer Version");
-					if (API.getSubServer(0).isRunning()) ((Player) sender).sendMessage("Teleport: /Go <Server> [Player]");
-				}
+			if ((sender instanceof Player) && ((Player) sender).hasPermission("SubServer.Command") && Main.config.getBoolean("Settings.GUI.Enabled")) {
+                new GUI((Player) sender, 0, null, Main);
 			} else {
 				if (sender instanceof Player) {
 					((Player) sender).sendMessage("Subservers Command List:");
@@ -430,6 +513,7 @@ public class SubServersCMD implements CommandExecutor {
 					Bukkit.getLogger().info("Start Server: /SubServer Start <Server>");
 					Bukkit.getLogger().info("Send Command: /SubServer Cmd <Server> <Command> [Args...]");
 					Bukkit.getLogger().info("Plugin Version: /SubServer Version");
+                    if (API.getSubServer(0).isRunning()) Bukkit.getLogger().info("Teleport: /Sub TP <Server> <Player>");
 				}
 			}
 		}

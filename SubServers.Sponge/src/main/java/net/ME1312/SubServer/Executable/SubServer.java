@@ -26,6 +26,7 @@ public class SubServer implements Serializable {
 	public String Name;
 	public int PID;
 	public boolean Log;
+    public boolean SharedChat;
 	public boolean Temporary;
 	public boolean Enabled;
 	public int Port;
@@ -47,17 +48,19 @@ public class SubServer implements Serializable {
 	 * @param PID Server PID
 	 * @param Port Server Port
 	 * @param Log Toggle Console Log
+     * @param SharedChat Toggle Shared Chat
 	 * @param Dir Runtime Directory
 	 * @param Exec Executable File
 	 * @param StopAfter Stop After x Minutes
 	 * @param Temporary Toggle Temporary Server Options
 	 */
-	public SubServer(Boolean Enabled, String Name, int PID, int Port, boolean Log, File Dir, Executable Exec, double StopAfter, boolean Temporary, Main Main) {
+	public SubServer(Boolean Enabled, String Name, int PID, int Port, boolean Log, boolean SharedChat, File Dir, Executable Exec, double StopAfter, boolean Temporary, Main Main) {
 		this.Enabled = Enabled;
 		this.Name = Name;
 		this.PID = PID;
 		this.Port = Port;
 		this.Log = Log;
+        this.SharedChat = SharedChat;
 		this.Temporary = Temporary;
 		this.Dir = Dir;
 		this.Exec = Exec;
@@ -128,14 +131,14 @@ public class SubServer implements Serializable {
 										sendCommandSilently("subconf@proxy lang Lang.Proxy.Teleport " + StringEscapeUtils.unescapeJava(Main.lang.getNode("Lang", "Proxy", "Teleport").getString().replace(" ", "%20")));
 										Thread.sleep(500);
 										
-										sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Main.config.getNode("Settings", "Lobby-Port").getString());
+										sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Main.config.getNode("Settings", "Lobby-Port").getString() + " true");
 										Thread.sleep(500);
 									} catch (InterruptedException e) {
 										Main.log.error(e.getStackTrace().toString());
 									}
 									for(Iterator<String> str = Main.SubServers.iterator(); str.hasNext(); ) {
 										String item = str.next();
-										sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + API.getSubServer(item).Port);
+										sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + API.getSubServer(item).Port + " " + API.getSubServer(item).SharedChat);
 										try {
 											Thread.sleep(500);
 										} catch (InterruptedException e) {

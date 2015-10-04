@@ -1,6 +1,6 @@
 name: 'SubServers'
 main: 'net.ME1312.SubServer.Load'
-version: '1.8.8i'
+version: '1.8.8j'
 authors: [ME1312]
 website: 'https://www.spigotmc.org/resources/subservers.11264/'
 commands:
@@ -40,10 +40,9 @@ permissions:
           subserver.command.teleport.*:
             description: Teleport to SubServers
             default: op
-            children:
-              subserver.command.teleport.others.*:
-                description: Teleport Others to SubServers
-                default: op
+          subserver.command.teleport.others.*:
+            description: Teleport Others to SubServers
+            default: op
           subserver.command.reload:
             description: Reload Subservers Configs
             default: op
