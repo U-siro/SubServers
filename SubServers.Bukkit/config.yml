@@ -10,8 +10,10 @@ Settings:
     GUI:
         Enabled: true
         Trigger-Item: '129'
+    Metrics-Enabled: true
     Server-IP: '127.0.0.1'
     Lobby-Port: 25565
+    Server-UUID: ''
 #
 # This is the settings for the proxy
 Proxy:

@@ -5,15 +5,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import net.ME1312.SubServer.Libraries.Metrics;
 
 import com.google.common.io.Files;
 
@@ -95,6 +91,11 @@ public class Main {
 
         config = confmanager.getNewConfig("config.yml");
         lang = confmanager.getNewConfig("lang.yml");
+
+        if (config.getRawString("Settings.Server-UUID").isEmpty()) {
+            config.set("Settings.Server-UUID", UUID.randomUUID().toString());
+            config.saveConfig();
+        }
         SubServers.addAll(config.getConfigurationSection("Servers").getKeys(false));
 
         /**
@@ -133,13 +134,9 @@ public class Main {
         Plugin.getCommand("sub").setExecutor(new SubServersCMD(this));
 
         /**
-         * MCStats
+         * ME1312.net Stats
          */
-        try {
-            new Metrics(Plugin);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Metrics(1, Plugin);
 
     }
 
