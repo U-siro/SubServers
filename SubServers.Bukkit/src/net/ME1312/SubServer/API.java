@@ -35,7 +35,6 @@ public class API {
 
     protected API(Main Main) {
         this.Main = Main;
-        new Metrics(Main);
     }
 
     /**

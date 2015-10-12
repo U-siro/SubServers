@@ -111,10 +111,6 @@ public class Main {
             configManager = (HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build();
             config = configManager.load();
             lang = (HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load();
-            if (config.getNode("Settings", "Server-UUID").getString().isEmpty()) {
-                config.getNode("Settings", "Server-UUID").setValue(UUID.randomUUID().toString());
-                configManager.save(config);
-            }
 
         } catch (IOException e) {
             log.error(e.getStackTrace().toString());
@@ -150,7 +146,7 @@ public class Main {
         game.getCommandDispatcher().register(Plugin, SubCommand, "subserver", "sub");
 
         /* Metrics */
-        new Metrics(1, Plugin);
+        new Metrics(1, Plugin, game);
     }
 
     @Listener

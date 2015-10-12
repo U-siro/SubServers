@@ -91,11 +91,6 @@ public class Main {
 
         config = confmanager.getNewConfig("config.yml");
         lang = confmanager.getNewConfig("lang.yml");
-
-        if (config.getRawString("Settings.Server-UUID").isEmpty()) {
-            config.set("Settings.Server-UUID", UUID.randomUUID().toString());
-            config.saveConfig();
-        }
         SubServers.addAll(config.getConfigurationSection("Servers").getKeys(false));
 
         /**
