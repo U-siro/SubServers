@@ -6,7 +6,7 @@ Settings:
     Server-Creation:
         git-dir: 'C:\Program Files\Git'
         log: true
-    config-version: 1.8.8j+
+    config-version: 1.8.8k+
     GUI:
         Enabled: true
         Trigger-Item: '129'
@@ -19,8 +19,8 @@ Settings:
 Proxy:
     enabled: false
     run-on-launch: true
-    dir: 'path/to/your/folder'
-    shell: './start-bungee.sh'
+    dir: './Folder'
+    exec: 'java -Djline.terminal=jline.UnsupportedTerminal -jar BungeeCord.jar'
     log: true
 #
 # This Is the List of your Servers
@@ -32,8 +32,8 @@ Servers:
         run-on-launch: false
         use-shared-chat: true
         log: true
-        dir: 'path/to/your/folder'
-        shell: './start.sh'
+        dir: './Folder'
+        exec: 'java -Djline.terminal=jline.UnsupportedTerminal -jar Spigot.jar'
         stop-after: 0
 #
 # End of Config

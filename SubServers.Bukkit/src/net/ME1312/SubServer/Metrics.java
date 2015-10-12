@@ -34,7 +34,15 @@ public class Metrics {
 
         this.PluginVersion = new Version(Plugin.getDescription().getVersion());
         this.JavaVersion = new Version(System.getProperty("java.version"));
-        this.ServerSoftware = Bukkit.getName();
+        try {
+            if (Class.forName("org.spigotmc.SpigotConfig") != null) {
+                this.ServerSoftware = "Spigot";
+            } else {
+                this.ServerSoftware = Bukkit.getName();
+            }
+        } catch (ClassNotFoundException e) {
+            this.ServerSoftware = Bukkit.getName();
+        }
         this.ServerUUID = UUID.fromString(Main.config.getRawString("Settings.Server-UUID"));
         this.MinecraftVersion = API.getMinecraftVersion();
         this.OperatingSystem = System.getProperty("os.name");

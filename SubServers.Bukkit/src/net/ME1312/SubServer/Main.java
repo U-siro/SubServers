@@ -67,7 +67,7 @@ public class Main {
         if (!(new File(Plugin.getDataFolder() + File.separator + "config.yml").exists())) {
             copyFromJar("config.yml", Plugin.getDataFolder() + File.separator + "config.yml");
             Bukkit.getLogger().info(lprefix + "Created Config.yml!");
-        } else if (!confmanager.getNewConfig("config.yml").getString("Settings.config-version").equalsIgnoreCase("1.8.8j+")) {
+        } else if (!confmanager.getNewConfig("config.yml").getString("Settings.config-version").equalsIgnoreCase("1.8.8k+")) {
             try {
                 Files.move(new File(Plugin.getDataFolder() + File.separator + "config.yml"), new File(Plugin.getDataFolder() + File.separator + "old-config." + Math.round(Math.random() * 100000) + ".yml"));
                 copyFromJar("config.yml", Plugin.getDataFolder() + File.separator + "config.yml");
@@ -109,7 +109,7 @@ public class Main {
          */
         PIDs.put("~Proxy", 0);
         Servers.put(0, new SubServer(config.getBoolean("Proxy.enabled"), "~Proxy", 0, 25565, config.getBoolean("Proxy.log"), false, new File(config.getRawString("Proxy.dir")),
-                new Executable(config.getRawString("Proxy.shell")), 0, false, this));
+                new Executable(config.getRawString("Proxy.exec")), 0, false, this));
 
         int i = 0;
         for(Iterator<String> str = SubServers.iterator(); str.hasNext(); ) {
@@ -117,7 +117,7 @@ public class Main {
             i++;
             PIDs.put(item, i);
             Servers.put(i, new SubServer(config.getBoolean("Servers." + item + ".enabled"), item, i, config.getInt("Servers." + item + ".port"), config.getBoolean("Servers." + item + ".log"),
-                    config.getBoolean("Servers." + item + ".use-shared-chat"), new File(config.getRawString("Servers." + item + ".dir")), new Executable(config.getRawString("Servers." + item + ".shell")), config.getDouble("Servers." + item + ".stop-after"), false, this));
+                    config.getBoolean("Servers." + item + ".use-shared-chat"), new File(config.getRawString("Servers." + item + ".dir")), new Executable(config.getRawString("Servers." + item + ".exec")), config.getDouble("Servers." + item + ".stop-after"), false, this));
             if (config.getBoolean("Servers." + item + ".enabled") && config.getBoolean("Servers." + item + ".run-on-launch")) {
                 Servers.get(i).start();
             }

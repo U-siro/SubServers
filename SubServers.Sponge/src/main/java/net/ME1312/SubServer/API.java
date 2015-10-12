@@ -37,7 +37,8 @@ public class API {
 	private static Main Main;
 	
 	protected API(Main Main) {
-		this.Main = Main;
+        this.Main = Main;
+        new Metrics(Main);
 	}
 	
 	/**
@@ -291,4 +292,11 @@ public class API {
 	 * @return The SubServers Version
 	 */
 	public static Version getPluginVersion() { return Main.PluginVersion; }
+
+    /**
+     * Gets the Minecraft Version
+     *
+     * @return The Minecraft Version
+     */
+    public static Version getMinecraftVersion() { return Main.MCVersion; }
 }

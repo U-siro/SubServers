@@ -15,7 +15,6 @@ import net.ME1312.SubServer.Executable.SubServerCreator;
 import net.ME1312.SubServer.GUI.GUI;
 import net.ME1312.SubServer.GUI.GUIHandler;
 import net.ME1312.SubServer.Libraries.Events.SubListener;
-import net.ME1312.SubServer.Libraries.Metrics;
 import net.ME1312.SubServer.Libraries.Version.Version;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -34,7 +33,7 @@ import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 
-@Plugin(id="SubServers", name="SubServers", version="1.8.8j")
+@Plugin(id="SubServers", name="SubServers", version="1.8.8k")
 public class Main {
     public static SubServerCreator ServerCreator;
 
@@ -94,7 +93,7 @@ public class Main {
                 copyFromJar("config.conf", new File(dataFolder, "config.conf").getPath());
                 log.info("Created Config.conf!");
 
-            } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build().load()).getNode("Settings", "config-version").getString().equalsIgnoreCase("1.8.8f+")) {
+            } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build().load()).getNode("Settings", "config-version").getString().equalsIgnoreCase("1.8.8k+")) {
                 Files.move(new File(dataFolder, "config.conf"), new File(dataFolder, "old-config." + Math.round(Math.random() * 100000.0) + ".conf"));
                 copyFromJar("config.conf", new File(dataFolder, "config.conf").getPath());
                 log.info("Updated Config.conf!");
@@ -103,7 +102,7 @@ public class Main {
                 copyFromJar("lang.conf", new File(dataFolder, "lang.conf").getPath());
                 log.info("Created Lang.conf!");
 
-            } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load()).getNode("config-version").getString().equalsIgnoreCase("1.8.8e+")) {
+            } else if (!((HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load()).getNode("config-version").getString().equalsIgnoreCase("1.8.8j+")) {
                 Files.move(new File(dataFolder, "lang.conf"), new File(dataFolder, "old-lang." + Math.round(Math.random() * 100000.0) + ".conf"));
                 copyFromJar("lang.conf", new File(dataFolder, "lang.conf").getPath());
                 log.info("Updated Lang.conf!");
@@ -112,6 +111,10 @@ public class Main {
             configManager = (HoconConfigurationLoader.builder().setFile(new File(dataFolder, "config.conf"))).build();
             config = configManager.load();
             lang = (HoconConfigurationLoader.builder().setFile(new File(dataFolder, "lang.conf"))).build().load();
+            if (config.getNode("Settings", "Server-UUID").getString().isEmpty()) {
+                config.getNode("Settings", "Server-UUID").setValue(UUID.randomUUID().toString());
+                configManager.save(config);
+            }
 
         } catch (IOException e) {
             log.error(e.getStackTrace().toString());
@@ -119,7 +122,7 @@ public class Main {
 
         /* Register SubServers */
         PIDs.put("~Proxy", 0);
-        Servers.put(0, new SubServer(config.getNode("Proxy", "enabled").getBoolean(), "~Proxy", 0, 25565, config.getNode("Proxy", "log").getBoolean(), false, new File(config.getNode("Proxy", "dir").getString()), new Executable(config.getNode("Proxy", "shell").getString()), 0, false, this));
+        Servers.put(0, new SubServer(config.getNode("Proxy", "enabled").getBoolean(), "~Proxy", 0, 25565, config.getNode("Proxy", "log").getBoolean(), false, new File(config.getNode("Proxy", "dir").getString()), new Executable(config.getNode("Proxy", "exec").getString()), 0, false, this));
 
         List SubServersStore = new ArrayList<Object>();
         SubServersStore.addAll(config.getNode("Servers").getChildrenMap().keySet());
@@ -133,7 +136,7 @@ public class Main {
             PIDs.put(item, i);
             Servers.put(i, new SubServer(config.getNode("Servers", item, "enabled").getBoolean(), item, i, config.getNode("Servers", item, "port").getInt(),
                     config.getNode("Servers", item, "log").getBoolean(), config.getNode("Servers", item, "use-shared-chat").getBoolean(), new File(config.getNode("Servers", item, "dir").getString()),
-                    new Executable(config.getNode("Servers", item, "shell").getString()), config.getNode("Servers", item, "stop-after").getDouble(), false, this));
+                    new Executable(config.getNode("Servers", item, "exec").getString()), config.getNode("Servers", item, "stop-after").getDouble(), false, this));
         }
     }
 
@@ -143,16 +146,11 @@ public class Main {
         GUI = new GUI();
 
         /* Register Commands */
-        CommandSpec SubCommand = CommandSpec.builder().description((Text)Texts.of((String)"All SubServers Commands")).executor((CommandExecutor)new SubServersCMD(this)).arguments(GenericArguments.optional((CommandElement)GenericArguments.remainingJoinedStrings((Text)Texts.of((String)"args")))).build();
-        game.getCommandDispatcher().register((Object) Plugin, (CommandCallable) SubCommand, new String[]{"subserver", "sub"});
+        CommandSpec SubCommand = CommandSpec.builder().description(Texts.of("All SubServers Commands")).executor(new SubServersCMD(this)).arguments(GenericArguments.optional(GenericArguments.remainingJoinedStrings(Texts.of("args")))).build();
+        game.getCommandDispatcher().register(Plugin, SubCommand, "subserver", "sub");
 
         /* Metrics */
-        try {
-            new Metrics(game, Plugin);
-        }
-        catch (IOException e) {
-            log.error(e.getStackTrace().toString());
-        }
+        new Metrics(1, Plugin);
     }
 
     @Listener

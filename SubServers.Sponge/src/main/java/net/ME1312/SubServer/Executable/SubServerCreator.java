@@ -21,6 +21,7 @@ public class SubServerCreator {
         vanilla,
     }
 
+
     private String Name;
     private int Port;
     private File Dir;
@@ -48,15 +49,21 @@ public class SubServerCreator {
 
         if (Type == ServerTypes.spigot) {
             this.Jar = "Spigot.jar";
-            this.Exec = new Executable("java -Xmx" + Memory + "M -Djline.terminal=jline.UnsupportedTerminal -Dcom.mojang.eula.agree=true -jar " + Jar + " -p " + Port + " -o false -h " + Main.config.getNode("Settings", "Server-IP").getString());
+            this.Exec = new Executable("java -Xmx" + Memory + "M -Djline.terminal=jline.UnsupportedTerminal -Dcom.mojang.eula.agree=true -jar " + Jar);
+
+            try {
+                GenerateProperties();
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
         } else if (Type == ServerTypes.bukkit) {
-            this.Jar = "Bukkit.jar";
-            this.Exec = new Executable("java -Xmx" + Memory + "M -jar " + Jar + " -Djline.terminal=jline.UnsupportedTerminal -p " + Port + " -o false -h " + Main.config.getNode("Settings", "Server-IP").getString());
+            this.Jar = "Craftbukkit.jar";
+            this.Exec = new Executable("java -Xmx" + Memory + "M -Djline.terminal=jline.UnsupportedTerminal -jar " + Jar + " -o false");
 
             try {
                 GenerateEULA();
-
+                GenerateProperties();
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -71,20 +78,6 @@ public class SubServerCreator {
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public boolean run() {
-        try {
-            if (API.executeEvent(SubEvent.Events.SubCreateEvent, this, Player, Type)) {
-                run(true);
-                return true;
-            } else {
-                return false;
-            }
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            Main.log.error(e.getStackTrace().toString());
-            return false;
         }
     }
 
@@ -109,14 +102,14 @@ public class SubServerCreator {
         writer.println("level-name=world");
         writer.println("enable-query=false");
         writer.println("allow-flight=false");
-        writer.println("announce-player-achievements=true");
+        writer.println("announce-player-achievements=false");
         writer.println("server-port=" + Port);
         writer.println("max-world-size=29999984");
         writer.println("level-type=DEFAULT");
         writer.println("enable-rcon=false");
         writer.println("level-seed=");
         writer.println("force-gamemode=false");
-        writer.println("server-ip=" + Main.config.getNode("Settings", "Server-IP").getString());
+        writer.println("server-ip=" + Main.config.getNode("Settings.Server-IP").toString());
         writer.println("network-compression-threshold=256");
         writer.println("max-build-height=256");
         writer.println("spawn-npcs=true");
@@ -127,7 +120,7 @@ public class SubServerCreator {
         writer.println("resource-pack=");
         writer.println("pvp=true");
         writer.println("difficulty=1");
-        writer.println("enable-command-block=false");
+        writer.println("enable-command-block=true");
         writer.println("gamemode=0");
         writer.println("player-idle-timeout=0");
         writer.println("max-players=20");
@@ -135,7 +128,8 @@ public class SubServerCreator {
         writer.println("spawn-monsters=true");
         writer.println("generate-structures=true");
         writer.println("view-distance=10");
-        writer.println("motd=A Minecraft Server");
+        writer.println("motd=A Generated SubServer");
+        writer.close();
     }
 
     private void run(boolean value) {
@@ -190,7 +184,7 @@ public class SubServerCreator {
                                     Main.config.getNode("Servers", Name, "log").setValue(true);
                                     Main.config.getNode("Servers", Name, "use-shared-chat").setValue(true);
                                     Main.config.getNode("Servers", Name, "dir").setValue(Dir.getPath());
-                                    Main.config.getNode("Servers", Name, "shell").setValue(Exec.toString());
+                                    Main.config.getNode("Servers", Name, "exec").setValue(Exec.toString());
                                     Main.config.getNode("Servers", Name, "stop-after").setValue(0);
                                     Main.configManager.save(Main.config);
                                 } else {
@@ -247,7 +241,7 @@ public class SubServerCreator {
                                     Main.config.getNode("Servers", Name, "use-shared-chat").setValue(true);
                                     Main.config.getNode("Servers", Name, "log").setValue(true);
                                     Main.config.getNode("Servers", Name, "dir").setValue(Dir.getPath());
-                                    Main.config.getNode("Servers", Name, "shell").setValue(Exec.toString());
+                                    Main.config.getNode("Servers", Name, "exec").setValue(Exec.toString());
                                     Main.config.getNode("Servers", Name, "stop-after").setValue(0);
                                     Main.configManager.save(Main.config);
                                 } else {

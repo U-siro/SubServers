@@ -1,6 +1,6 @@
 name: 'SubServers'
 main: 'net.ME1312.SubServer.Load'
-version: '1.8.8j'
+version: '1.8.8k'
 authors: [ME1312]
 website: 'https://www.spigotmc.org/resources/subservers.11264/'
 commands:

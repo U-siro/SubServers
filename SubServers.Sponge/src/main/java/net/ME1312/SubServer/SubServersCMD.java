@@ -291,7 +291,7 @@ public class SubServersCMD implements CommandExecutor {
 
                     if (Main.Servers.get(0) == null) {
                         Main.Servers.put(0, new SubServer(Main.config.getNode("Proxy", "enabled").getBoolean(), "~Proxy", 0, 25565, Main.config.getNode("Proxy", "log").getBoolean(), false,
-                                new File(Main.config.getNode("Proxy", "dir").getString()), new Executable(Main.config.getNode("Proxy", "shell").toString()), 0, false, Main));
+                                new File(Main.config.getNode("Proxy", "dir").getString()), new Executable(Main.config.getNode("Proxy", "exec").toString()), 0, false, Main));
                     }
 
                     Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
@@ -323,6 +323,8 @@ public class SubServersCMD implements CommandExecutor {
                                     Thread.sleep(500);
                                     API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Reset-Storage " + StringEscapeUtils.unescapeJava(Main.lang.getNode("Lang", "Proxy", "Reset-Storage").getString().replace(" ", "%20")));
                                     Thread.sleep(500);
+                                    API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Chat-Format " + StringEscapeUtils.unescapeJava(Main.lang.getNode("Lang", "Proxy", "Chat-Format").getString().replace(" ", "%20")));
+                                    Thread.sleep(500);
                                     API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Teleport " + StringEscapeUtils.unescapeJava(Main.lang.getNode("Lang", "Proxy", "Teleport").getString().replace(" ", "%20")));
                                     Thread.sleep(500);
 
@@ -351,7 +353,7 @@ public class SubServersCMD implements CommandExecutor {
                                     Main.PIDs.put(item, i);
                                     Main.Servers.put(i, new SubServer(Main.config.getNode("Servers", item, "enabled").getBoolean(), item, i, Main.config.getNode("Servers", item, "port").getInt(),
                                             Main.config.getNode("Servers", item, "log").getBoolean(), Main.config.getNode("Servers", item, "use-shared-chat").getBoolean(), new File(Main.config.getNode("Servers", item, "dir").getString()),
-                                            new Executable(Main.config.getNode("Servers", item, "shell").getString()), Main.config.getNode("Servers", item, "stop-after").getDouble(), false, Main));
+                                            new Executable(Main.config.getNode("Servers", item, "exec").getString()), Main.config.getNode("Servers", item, "stop-after").getDouble(), false, Main));
                                 }
                             }
 

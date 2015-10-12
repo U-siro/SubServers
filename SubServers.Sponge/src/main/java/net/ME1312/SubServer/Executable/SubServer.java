@@ -128,6 +128,8 @@ public class SubServer implements Serializable {
 										Thread.sleep(500);
 										sendCommandSilently("subconf@proxy lang Lang.Proxy.Reset-Storage " + StringEscapeUtils.unescapeJava(Main.lang.getNode("Lang", "Proxy", "Reset-Storage").getString().replace(" ", "%20")));
 										Thread.sleep(500);
+                                        sendCommandSilently("subconf@proxy lang Lang.Proxy.Chat-Format " + StringEscapeUtils.unescapeJava(Main.lang.getNode("Lang", "Proxy", "Chat-Format").getString().replace(" ", "%20")));
+                                        Thread.sleep(500);
 										sendCommandSilently("subconf@proxy lang Lang.Proxy.Teleport " + StringEscapeUtils.unescapeJava(Main.lang.getNode("Lang", "Proxy", "Teleport").getString().replace(" ", "%20")));
 										Thread.sleep(500);
 										

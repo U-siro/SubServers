@@ -369,7 +369,7 @@ public class SubServersCMD implements CommandExecutor {
 					
 					if (Main.Servers.get(0) == null) {
 						Main.Servers.put(0, new SubServer(Main.config.getBoolean("Proxy.enabled"), "~Proxy", 0, 25565, Main.config.getBoolean("Proxy.log"), false, new File(Main.config.getRawString("Proxy.dir")),
-								new Executable(Main.config.getRawString("Proxy.shell")), 0, false, Main));
+								new Executable(Main.config.getRawString("Proxy.exec")), 0, false, Main));
 					}
 					
 					new BukkitRunnable() {
@@ -423,7 +423,7 @@ public class SubServersCMD implements CommandExecutor {
 							    	Main.PIDs.put(item, i);
 							    	Main.Servers.put(i, new SubServer(Main.config.getBoolean("Servers." + item + ".enabled"), item, i, Main.config.getInt("Servers." + item + ".port"), 
 							    			Main.config.getBoolean("Servers." + item + ".log"), Main.config.getBoolean("Servers." + item + ".use-shared-chat"), new File(Main.config.getRawString("Servers." + item + ".dir")),
-							    			new Executable(Main.config.getRawString("Servers." + item + ".shell")), Main.config.getDouble("Servers." + item + ".stop-after"), false, Main));
+							    			new Executable(Main.config.getRawString("Servers." + item + ".exec")), Main.config.getDouble("Servers." + item + ".stop-after"), false, Main));
 							    }
 							}
 

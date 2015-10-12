@@ -195,7 +195,7 @@ public class SubServerCreator {
                                     Main.config.set("Servers." + Name + ".log", true);
                                     Main.config.set("Servers." + Name + ".use-shared-chat", true);
                                     Main.config.set("Servers." + Name + ".dir", Dir.getPath());
-                                    Main.config.set("Servers." + Name + ".shell", Exec.toString());
+                                    Main.config.set("Servers." + Name + ".exec", Exec.toString());
                                     Main.config.set("Servers." + Name + ".stop-after", 0);
                                     Main.config.saveConfig();
                                 } else {
@@ -252,7 +252,7 @@ public class SubServerCreator {
                                     Main.config.set("Servers." + Name + ".log", true);
                                     Main.config.set("Servers." + Name + ".use-shared-chat", true);
                                     Main.config.set("Servers." + Name + ".dir", Dir.getPath());
-                                    Main.config.set("Servers." + Name + ".shell", Exec.toString());
+                                    Main.config.set("Servers." + Name + ".exec", Exec.toString());
                                     Main.config.set("Servers." + Name + ".stop-after", 0);
                                     Main.config.saveConfig();
                                 } else {
