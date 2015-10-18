@@ -54,7 +54,7 @@ public class Main {
             new File(Plugin.getDataFolder().toString()).mkdirs();
         }
 
-        new API(this);
+        new SubAPI(this);
 
         PluginVersion = new Version(Plugin.getDescription().getVersion());
         MCVersion = new Version(Bukkit.getServer().getVersion().split("\\(MC\\: ")[1].split("\\)")[0]);
@@ -143,8 +143,8 @@ public class Main {
                 Thread.sleep(1000);
             }
 
-            if (API.getSubServer(0).isRunning()) {
-                API.getSubServer(0).stop();
+            if (SubAPI.getSubServer(0).isRunning()) {
+                SubAPI.getSubServer(0).stop();
                 Servers.get(PIDs.get("~Proxy")).waitFor();
             }
 
@@ -153,8 +153,8 @@ public class Main {
 
             for(Iterator<String> str = SubServersStore.iterator(); str.hasNext(); ) {
                 String item = str.next();
-                if (API.getSubServer(item).isRunning()) {
-                    API.getSubServer(item).stop();
+                if (SubAPI.getSubServer(item).isRunning()) {
+                    SubAPI.getSubServer(item).stop();
                     Servers.get(PIDs.get(item)).waitFor();
                     if (Servers.get(PIDs.get(item)).Temporary) {
                         Thread.sleep(500);

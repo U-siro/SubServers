@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -203,11 +204,11 @@ public class SubServer implements Serializable {
 								};
 							}).submit(Main.Plugin);
 							if (StopAfter > 0) {
-								Main.game.getScheduler().createTaskBuilder().async().delay((long) ((StopAfter * 1000) * 60)).execute(new Runnable() {
-									@Override
-									public void run() {
-										StdIn = "stop";
-									};
+								Main.game.getScheduler().createTaskBuilder().async().delay((long) ((StopAfter * 1000) * 60), TimeUnit.MILLISECONDS).execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        StdIn = "stop";
+                                    };
 								}).submit(Main.Plugin);
 							}
 							try {

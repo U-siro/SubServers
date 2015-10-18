@@ -4,6 +4,7 @@ import net.md_5.bungee.api.AbstractReconnectHandler;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -28,7 +29,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onServerKickEvent(ServerKickEvent event) {
+    public void onServerKick(ServerKickEvent event) {
         ServerInfo kickedFrom = null;
         if (event.getPlayer().getServer() != null) {
             kickedFrom = event.getPlayer().getServer().getInfo();
@@ -46,26 +47,30 @@ public class PlayerListener implements Listener {
             if (kickedFrom != null && !kickedFrom.equals(kickTo)) {
                 event.getPlayer().setReconnectServer(kickTo);
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(ChatColor.GRAY.toString() + ChatColor.BOLD.toString() + "Connection Lost: " + ChatColor.RESET.toString() + event.getKickReasonComponent()[0].toLegacyText());
+                event.getPlayer().sendMessage(new TextComponent(ChatColor.GRAY.toString() + ChatColor.BOLD.toString() + "Connection Lost: " + ChatColor.RESET.toString() + event.getKickReasonComponent()[0].toLegacyText()));
             }
         }
     }
 
     @EventHandler
-    public void onPlayerMessage(ChatEvent event) {
-        if (!event.isCancelled() && (event.getSender() instanceof ProxiedPlayer) && !event.getMessage().startsWith("/")) {
+    public void onMessageSend(ChatEvent event) {
+        if (!event.isCancelled() && (event.getSender() instanceof ProxiedPlayer) && !event.getMessage().startsWith("/") && Main.SharedChat.contains(((ProxiedPlayer) event.getSender()).getServer().getInfo().getName())) {
             String message = event.getMessage();
             ProxiedPlayer player = (ProxiedPlayer) event.getSender();
 
             for(Iterator<String> str = Main.SharedChat.iterator(); str.hasNext(); ) {
                 String item = str.next();
-                if (Main.ServerInfo.keySet().contains(item) && player.getServer().getInfo().getAddress() != Main.ServerInfo.get(item).getAddress()) {
+                if (ProxyServer.getInstance().getServers().keySet().contains(item) && player.getServer().getInfo().getAddress() != ProxyServer.getInstance().getServerInfo(item).getAddress()) {
+                    for (Iterator<ProxiedPlayer> players = ProxyServer.getInstance().getServerInfo(item).getPlayers().iterator(); players.hasNext(); ) {
+                        players.next().sendMessage(new TextComponent(Main.lang.get("Lang.Proxy.Chat-Format").replace("$displayname$", player.getDisplayName()).replace("$message$", message).replace("$server$", player.getServer().getInfo().getName())));
+                    }
+                } if (Main.ServerInfo.keySet().contains(item) && player.getServer().getInfo().getAddress() != Main.ServerInfo.get(item).getAddress()) {
                     for (Iterator<ProxiedPlayer> players = Main.ServerInfo.get(item).getPlayers().iterator(); players.hasNext(); ) {
-                        players.next().sendMessage(Main.lang.get("Lang.Proxy.Chat-Format").replace("$displayname$", player.getDisplayName()).replace("$message$", message).replace("$server$", player.getServer().getInfo().getName().replace("~", "")));
+                        players.next().sendMessage(new TextComponent(Main.lang.get("Lang.Proxy.Chat-Format").replace("$displayname$", player.getDisplayName()).replace("$message$", message).replace("$server$", player.getServer().getInfo().getName().replace("~", ""))));
                     }
                 } if (Main.PlayerServerInfo.keySet().contains(item) && player.getServer().getInfo().getAddress() != Main.PlayerServerInfo.get(item).getAddress()) {
                     for (Iterator<ProxiedPlayer> players = Main.PlayerServerInfo.get(item).getPlayers().iterator(); players.hasNext(); ) {
-                        players.next().sendMessage(Main.lang.get("Lang.Proxy.Chat-Format").replace("$displayname$", player.getDisplayName()).replace("$message$", message).replace("$server$", player.getServer().getInfo().getName().replace("~", "")));
+                        players.next().sendMessage(new TextComponent(Main.lang.get("Lang.Proxy.Chat-Format").replace("$displayname$", player.getDisplayName()).replace("$message$", message).replace("$server$", player.getServer().getInfo().getName())));
                     }
                 }
             }
@@ -73,13 +78,13 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLogin(ServerConnectEvent event) {
+    public void onServerConnect(ServerConnectEvent event) {
         if (event.getTarget().getName().equalsIgnoreCase("default")) {
             event.setCancelled(true);
             if (Main.ServerInfo.keySet().contains("~Lobby")) {
                 event.getPlayer().connect(Main.ServerInfo.get("~Lobby"));
             } else {
-                event.getPlayer().disconnect("Server \"~Lobby\" Unavailable. Please try again later.");
+                event.getPlayer().disconnect(new TextComponent("Server \"~Lobby\" Unavailable. Please try again later."));
             }
         }
     }

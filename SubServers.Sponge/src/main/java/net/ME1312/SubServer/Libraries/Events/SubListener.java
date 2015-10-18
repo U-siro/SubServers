@@ -35,7 +35,7 @@ public interface SubListener {
 	default void onSubServerStop(SubPlayerEvent event) { return; }
 	
 	/**
-	 * Called when a Subserver's Shell Exits<br /> Cancelling this method will do nothing.
+	 * Called when a Subserver's Shell Exits<br> Cancelling this method will do nothing.
 	 * 
 	 * @param event The event attached to this method
 	 */

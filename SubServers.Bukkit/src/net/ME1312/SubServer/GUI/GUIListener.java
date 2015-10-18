@@ -1,10 +1,9 @@
 package net.ME1312.SubServer.GUI;
 
-import net.ME1312.SubServer.API;
+import net.ME1312.SubServer.SubAPI;
 import net.ME1312.SubServer.Main;
 import net.ME1312.SubServer.Executable.SubServerCreator;
 import net.ME1312.SubServer.Executable.SubServerCreator.ServerTypes;
-import net.ME1312.SubServer.Executable.Executable;
 import net.ME1312.SubServer.Libraries.Version.Version;
 
 import org.bukkit.Material;
@@ -18,7 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,8 +29,6 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 @SuppressWarnings("deprecation")
 public class GUIListener implements Listener {
-    protected boolean chatEnabled = true;
-    protected String chatText = "";
     private Main Main;
 
     public GUIListener(Main Main) {
@@ -89,7 +85,7 @@ public class GUIListener implements Listener {
                 String displayName = event.getCurrentItem().getItemMeta().getDisplayName();
                 if ((ChatColor.DARK_GREEN.toString() + Main.lang.getString("Lang.GUI.Start")).equals(displayName)) {
                     if (player.hasPermission("SubServer.Command.start.*") || player.hasPermission("SubServer.Command.start." + event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, ""))) {
-                        API.getSubServer(event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, "")).start((Player)event.getWhoClicked());
+                        SubAPI.getSubServer(event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, "")).start((Player)event.getWhoClicked());
                         player.closeInventory();
                         new GUI(Main).openLoader(player, event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, ""), "openServerWindow");
                         new BukkitRunnable() {
@@ -106,7 +102,7 @@ public class GUIListener implements Listener {
                     }
                 } else if ((ChatColor.RED.toString() + Main.lang.getString("Lang.GUI.Stop")).equals(displayName)) {
                     if (player.hasPermission("SubServer.Command.stop.*") || player.hasPermission("SubServer.Command.stop." + event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, ""))) {
-                        final boolean stopped = API.getSubServer(event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, "")).stop((Player)event.getWhoClicked());
+                        final boolean stopped = SubAPI.getSubServer(event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, "")).stop((Player)event.getWhoClicked());
                         player.closeInventory();
                         new GUI(Main).openLoader(player, event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, ""), "openServerWindow");
                         new BukkitRunnable() {
@@ -124,7 +120,7 @@ public class GUIListener implements Listener {
                     }
                 } else if ((ChatColor.DARK_RED.toString() + Main.lang.getString("Lang.GUI.Terminate")).equals(displayName)) {
                     if (player.hasPermission("SubServer.Command.kill.*") || player.hasPermission("SubServer.Command.kill." + event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, ""))) {
-                        API.getSubServer(event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, "")).terminate((Player)event.getWhoClicked());
+                        SubAPI.getSubServer(event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, "")).terminate((Player)event.getWhoClicked());
                         player.closeInventory();
                         new BukkitRunnable() {
                             @Override
@@ -147,7 +143,8 @@ public class GUIListener implements Listener {
                 } else if ((ChatColor.AQUA.toString() + Main.lang.getString("Lang.GUI.Send-CMD")).equals(displayName)) {
                     if (player.hasPermission("SubServer.Command.send.*") || player.hasPermission("SubServer.Command.send." + event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, ""))) {
                         player.closeInventory();
-                        chatEnabled = false;
+                        final ChatListener chat = new ChatListener(player, Main);
+                        chat.chatEnabled = false;
                         player.sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.GUI.Enter-CMD"));
                         new BukkitRunnable() {
                             @Override
@@ -155,22 +152,22 @@ public class GUIListener implements Listener {
                                 try {
                                     do {
                                         Thread.sleep(25);
-                                    } while (chatEnabled == false);
+                                    } while (chat.chatEnabled == false);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
 
-                                API.getSubServer(event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, "")).sendCommand((Player)event.getWhoClicked(), chatText);
-                                chatText = "";
+                                SubAPI.getSubServer(event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, "")).sendCommand((Player)event.getWhoClicked(), chat.chatText);
+                                chat.chatText = "";
                                 new GUI(Main).openSentCommand(player, event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, ""));
                             }
                         }.runTaskAsynchronously(Main.Plugin);
                     }
                 } else if ((ChatColor.DARK_GREEN.toString() + Main.lang.getString("Lang.GUI.Online")).equals(displayName)) {
                     String server = event.getClickedInventory().getName().replace(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW, "");
-                    if (API.getSubServer(0).isRunning() && (player.hasPermission("SubServer.Command.teleport." + server) || player.hasPermission("SubServer.Command.teleport.*")) && !server.equalsIgnoreCase("~Proxy")) {
+                    if (SubAPI.getSubServer(0).isRunning() && (player.hasPermission("SubServer.Command.teleport." + server) || player.hasPermission("SubServer.Command.teleport.*")) && !server.equalsIgnoreCase("~Proxy")) {
                         player.closeInventory();
-                        API.getSubServer(0).sendCommandSilently("subconf@proxy sendplayer " + player.getName() + " " + server);
+                        SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy sendplayer " + player.getName() + " " + server);
                         player.sendMessage(ChatColor.AQUA + Main.lprefix +  Main.lang.getString("Lang.Commands.Teleport"));
                     }
                 }
@@ -221,10 +218,11 @@ public class GUIListener implements Listener {
             final Player player = (Player) event.getWhoClicked();
             if (event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR && event.getCurrentItem().hasItemMeta()) {
                 final ServerTypes Type = ServerTypes.valueOf(event.getCurrentItem().getItemMeta().getDisplayName().replace(ChatColor.GRAY.toString(), "").toLowerCase());
-                final String Jar = event.getCurrentItem().getItemMeta().getDisplayName().replace(ChatColor.GRAY.toString(), "") + ".jar";
                 player.closeInventory();
 
-                chatEnabled = false;
+                final ChatListener chat = new ChatListener(player, Main);
+
+                chat.chatEnabled = false;
                 player.sendMessage(ChatColor.YELLOW + Main.lprefix + Main.lang.getString("Lang.Create-Server.Server-Version"));
                 new BukkitRunnable() {
                     @Override
@@ -232,60 +230,60 @@ public class GUIListener implements Listener {
                         try {
                             do {
                                 Thread.sleep(25);
-                            } while (chatEnabled == false);
+                            } while (chat.chatEnabled == false);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
 
-                        Version Version = new Version(chatText);
+                        Version Version = new Version(chat.chatText);
                         if (Version.compareTo(new Version("1.8")) < 0) {
                             player.sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Create-Server.Server-Version-Unsupported"));
                         } else {
                             player.sendMessage(ChatColor.YELLOW + Main.lprefix + Main.lang.getString("Lang.Create-Server.Server-Name"));
-                            chatEnabled = false;
+                            chat.chatEnabled = false;
                             try {
                                 do {
                                     Thread.sleep(25);
-                                } while (chatEnabled == false);
+                                } while (chat.chatEnabled == false);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            String Name = chatText;
+                            String Name = chat.chatText;
                             if (!StringUtils.isAlphanumericSpace(Name)) {
                                 player.sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Create-Server.Server-Name-Alphanumeric"));
                             } else {
                                 player.sendMessage(ChatColor.YELLOW + Main.lprefix + Main.lang.getString("Lang.Create-Server.Server-Memory"));
-                                chatEnabled = false;
+                                chat.chatEnabled = false;
                                 try {
                                     do {
                                         Thread.sleep(25);
-                                    } while (chatEnabled == false);
+                                    } while (chat.chatEnabled == false);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
 
                                 int Memory = 0;
                                 try {
-                                    Memory = Integer.parseInt(chatText);
+                                    Memory = Integer.parseInt(chat.chatText);
                                 } catch (NumberFormatException e) {
                                     player.sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Create-Server.Server-Memory-Invalid"));
                                 }
                                 if (Memory == 0) {
                                     player.sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Create-Server.Server-Memory-Invalid"));
                                 } else {
-                                    chatEnabled = false;
+                                    chat.chatEnabled = false;
                                     player.sendMessage(ChatColor.YELLOW + Main.lprefix + Main.lang.getString("Lang.Create-Server.Server-Port"));
                                     try {
                                         do {
                                             Thread.sleep(25);
-                                        } while (chatEnabled == false);
+                                        } while (chat.chatEnabled == false);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
 
                                     int Port = 0;
                                     try {
-                                        Port = Integer.parseInt(chatText);
+                                        Port = Integer.parseInt(chat.chatText);
                                     } catch (NumberFormatException e) {
                                         player.sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Create-Server.Server-Port-Invalid"));
                                     }
@@ -306,17 +304,4 @@ public class GUIListener implements Listener {
             event.setCancelled(true);
         }
     }
-
-    /**
-     * Chat Listener
-     */
-    @EventHandler
-    public void onPlayerCommand(PlayerChatEvent event) {
-        if (chatEnabled == false) {
-            chatText = event.getMessage();
-            chatEnabled = true;
-            event.setCancelled(true);
-        }
-    }
-
 }

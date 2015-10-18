@@ -98,7 +98,7 @@ public class API {
 	/**
 	 * Get SubServers from the Configuration
 	 * 
-	 * @return List<SubServer> Of all Servers Defined in the Configuration
+	 * @return List Of all Servers Defined in the Configuration
 	 */
 	public static Collection<SubServer> getSubServers() {
 		return Main.Servers.values();

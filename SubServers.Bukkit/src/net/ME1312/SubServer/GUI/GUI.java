@@ -3,7 +3,7 @@ package net.ME1312.SubServer.GUI;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import net.ME1312.SubServer.API;
+import net.ME1312.SubServer.SubAPI;
 import net.ME1312.SubServer.Main;
 import net.ME1312.SubServer.Libraries.Version.Version;
 
@@ -56,15 +56,15 @@ public class GUI implements Listener {
 			blockMeta = null;
 			for(Iterator<String> str = Main.SubServers.iterator(); str.hasNext(); ) {
 			    String item = str.next();
-			    if (API.getSubServer(item).Enabled) {
+			    if (SubAPI.getSubServer(item).Enabled) {
 			    	if (Main.SubServers.indexOf(item) >= min && Main.SubServers.indexOf(item) <= max) {
-			    		if (API.getSubServer(item).Temporary) {
+			    		if (SubAPI.getSubServer(item).Temporary) {
 			    			block = new ItemStack(289);
 			    			blockMeta = block.getItemMeta();
 			    			blockMeta.setDisplayName(ChatColor.YELLOW + item);
 			    			blockMeta.setLore(Arrays.asList(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Online"), ChatColor.GRAY + Main.lang.getString("Lang.GUI.Temp-Server")));
 			    			block.setItemMeta(blockMeta);
-			    		} else if (API.getSubServer(item).isRunning()) {
+			    		} else if (SubAPI.getSubServer(item).isRunning()) {
 			    			block = new ItemStack(Material.GLOWSTONE_DUST);
 			    			blockMeta = block.getItemMeta();
 			    			blockMeta.setDisplayName(ChatColor.YELLOW + item);
@@ -108,7 +108,7 @@ public class GUI implements Listener {
 				block = new ItemStack(Material.EMERALD);
 				blockMeta = block.getItemMeta();
 				blockMeta.setDisplayName(ChatColor.YELLOW + "~Proxy");
-				if (API.getSubServer(0).isRunning()) {
+				if (SubAPI.getSubServer(0).isRunning()) {
 					blockMeta.setLore(Arrays.asList(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Online")));
 				} else {
 					blockMeta.setLore(Arrays.asList(ChatColor.DARK_RED + Main.lang.getString("Lang.GUI.Offline")));
@@ -180,7 +180,7 @@ public class GUI implements Listener {
 		if (server != null) {
 			inv = Bukkit.createInventory(null, 27, ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Server-Admin-Title") + ChatColor.YELLOW + server);
 
-			if (API.getSubServer(server).isRunning()) {
+			if (SubAPI.getSubServer(server).isRunning()) {
 				block = new ItemStack(Material.EMERALD_BLOCK);
 		    	blockMeta = block.getItemMeta();
 		    	blockMeta.setDisplayName(ChatColor.GRAY + Main.lang.getString("Lang.GUI.Start"));
@@ -227,11 +227,11 @@ public class GUI implements Listener {
 		    	block = null;
 		    	blockMeta = null;
 		    	
-		    	if (!API.getSubServer(server).Temporary) {
+		    	if (!SubAPI.getSubServer(server).Temporary) {
 		    		block = new ItemStack(Material.GLOWSTONE_DUST);
 		    		blockMeta = block.getItemMeta();
 		    		blockMeta.setDisplayName(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Online"));
-		    		if (API.getSubServer(0).isRunning() && (player.hasPermission("SubServer.Command.teleport." + server) || player.hasPermission("SubServer.Command.teleport.*")) && !server.equalsIgnoreCase("~Proxy")) {
+		    		if (SubAPI.getSubServer(0).isRunning() && (player.hasPermission("SubServer.Command.teleport." + server) || player.hasPermission("SubServer.Command.teleport.*")) && !server.equalsIgnoreCase("~Proxy")) {
 		    			blockMeta.setLore(Arrays.asList(ChatColor.GRAY + "Click to Teleport"));
 		    		}
 		    		block.setItemMeta(blockMeta);
@@ -242,7 +242,7 @@ public class GUI implements Listener {
 		    		block = new ItemStack(289);
 		    		blockMeta = block.getItemMeta();
 		    		blockMeta.setDisplayName(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Online"));
-		    		if (API.getSubServer(0).isRunning() && (player.hasPermission("SubServer.Command.teleport." + server) || player.hasPermission("SubServer.Command.teleport.*")) && !server.equalsIgnoreCase("~Proxy")) {
+		    		if (SubAPI.getSubServer(0).isRunning() && (player.hasPermission("SubServer.Command.teleport." + server) || player.hasPermission("SubServer.Command.teleport.*")) && !server.equalsIgnoreCase("~Proxy")) {
 		    			blockMeta.setLore(Arrays.asList(ChatColor.GRAY + Main.lang.getString("Lang.GUI.Temp-Server"), ChatColor.GRAY + "Click to Teleport"));
 		    		} else {
 		    			blockMeta.setLore(Arrays.asList(ChatColor.GRAY + Main.lang.getString("Lang.GUI.Temp-Server")));
@@ -253,7 +253,7 @@ public class GUI implements Listener {
 		    		blockMeta = null;
 		    	}
 			} else {
-				if (!API.getSubServer(server).Temporary) {
+				if (!SubAPI.getSubServer(server).Temporary) {
 					block = new ItemStack(Material.EMERALD_BLOCK);
 					blockMeta = block.getItemMeta();
 					blockMeta.setDisplayName(ChatColor.DARK_GREEN + Main.lang.getString("Lang.GUI.Start"));
@@ -318,7 +318,7 @@ public class GUI implements Listener {
 	    		block = null;
 	    		blockMeta = null;
 	    		
-		    	if (!API.getSubServer(server).Temporary) {
+		    	if (!SubAPI.getSubServer(server).Temporary) {
 		    		block = new ItemStack(Material.REDSTONE);
 		    		blockMeta = block.getItemMeta();
 		    		blockMeta.setDisplayName(ChatColor.DARK_RED + Main.lang.getString("Lang.GUI.Offline"));

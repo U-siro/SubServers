@@ -2,10 +2,7 @@ package net.ME1312.SubServer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import net.ME1312.SubServer.Executable.Executable;
 import net.ME1312.SubServer.Executable.SubServer;
@@ -388,24 +385,13 @@ public class SubServersCMD implements CommandExecutor {
                 }
             } else if (args[0].equalsIgnoreCase("help")) {
                 if (sender instanceof Player) {
-                    ((Player) sender).sendMessage(Texts.of("Subservers Command List:"));
-                    ((Player) sender).sendMessage(Texts.of("GUI: /Subserver [Server]"));
-                    ((Player) sender).sendMessage(Texts.of("Reload Plugin: /SubServer Reload"));
-                    ((Player) sender).sendMessage(Texts.of("Stop Server: /SubServer Stop <Server>"));
-                    ((Player) sender).sendMessage(Texts.of("Kill Server: /SubServer Kill <Server>"));
-                    ((Player) sender).sendMessage(Texts.of("Start Server: /SubServer Start <Server>"));
-                    ((Player) sender).sendMessage(Texts.of("Send Command: /SubServer Cmd <Server> <Command> " + ChatColor.ITALIC + "[Args...]"));
-                    ((Player) sender).sendMessage(Texts.of("Plugin Version: /SubServer Version"));
-                    if (API.getSubServer(0).isRunning()) ((Player) sender).sendMessage(Texts.of("Teleport: /Go <Server> [Player]"));
+                    for (Iterator<String> str = Arrays.<String>asList(getHelp(true)).iterator(); str.hasNext(); ) {
+                        ((Player) sender).sendMessage(Texts.of(str.next()));
+                    }
                 } else {
-                    Main.log.info("Subservers Command List:");
-                    Main.log.info("Reload Plugin: /SubServer Reload");
-                    Main.log.info("Stop Server: /SubServer Stop <Server>");
-                    Main.log.info("Kill Server: /SubServer Kill <Server>");
-                    Main.log.info("Start Server: /SubServer Start <Server>");
-                    Main.log.info("Send Command: /SubServer Cmd <Server> <Command> [Args...]");
-                    Main.log.info("Plugin Version: /SubServer Version");
-                    if (API.getSubServer(0).isRunning()) Main.log.info("Teleport: /Go <Server> <Player>");
+                    for (Iterator<String> str = Arrays.<String>asList(getHelp(false)).iterator(); str.hasNext(); ) {
+                        Main.log.info(str.next());
+                    }
                 }
             } else if (Main.config.getNode("Settings", "GUI", "Enabled").getBoolean() && (sender instanceof Player) /*&& ((Player) sender).hasPermission("SubServer.Command")*/) { //TODO
                 if (Main.SubServers.contains(args[0])) {
@@ -425,26 +411,34 @@ public class SubServersCMD implements CommandExecutor {
                 Main.GUI.ServerSelectionWindow((Player) sender, 0);
             } else {
                 if (sender instanceof Player) {
-                    ((Player) sender).sendMessage(Texts.of("Subservers Command List:"));
-                    ((Player) sender).sendMessage(Texts.of("GUI: /Subserver [Server]"));
-                    ((Player) sender).sendMessage(Texts.of("Reload Plugin: /SubServer Reload"));
-                    ((Player) sender).sendMessage(Texts.of("Stop Server: /SubServer Stop <Server>"));
-                    ((Player) sender).sendMessage(Texts.of("Kill Server: /SubServer Kill <Server>"));
-                    ((Player) sender).sendMessage(Texts.of("Start Server: /SubServer Start <Server>"));
-                    ((Player) sender).sendMessage(Texts.of("Send Command: /SubServer Cmd <Server> <Command> " + ChatColor.ITALIC + "[Args...]"));
-                    ((Player) sender).sendMessage(Texts.of("Plugin Version: /SubServer Version"));
-                    if (API.getSubServer(0).isRunning()) ((Player) sender).sendMessage(Texts.of("Teleport: /Go <Server> [Player]"));
+                    for (Iterator<String> str = Arrays.<String>asList(getHelp(true)).iterator(); str.hasNext(); ) {
+                        ((Player) sender).sendMessage(Texts.of(str.next()));
+                    }
                 } else {
-                    Main.log.info("Main SubServer Command");
-                    Main.log.info("Reload Plugin: /SubServer Reload");
-                    Main.log.info("Stop Server: /SubServer Stop <Server>");
-                    Main.log.info("Kill Server: /SubServer Kill <Server>");
-                    Main.log.info("Start Server: /SubServer Start <Server>");
-                    Main.log.info("Send Command: /SubServer Cmd <Server> <Command> [Args...]");
-                    Main.log.info("Plugin Version: /SubServer Version");
+                    for (Iterator<String> str = Arrays.<String>asList(getHelp(false)).iterator(); str.hasNext(); ) {
+                        Main.log.info(str.next());
+                    }
                 }
             }
         }
         return CommandResult.success();
+    }
+
+    private String[] getHelp(boolean isPlayer) {
+        return new String[]{
+                ((isPlayer) ? ChatColor.AQUA : "") + "SubServers Command List:",
+                ((isPlayer) ? ChatColor.AQUA : "") + "GUI: /SubServer [Server]",
+                ((isPlayer) ? ChatColor.AQUA : "") + "Help: /SubServer Help",
+                ((isPlayer) ? ChatColor.AQUA : "") + "Reload Plugin: /SubServer Reload",
+                ((isPlayer) ? ChatColor.AQUA : "") + "Plugin Version: /SubServer Version",
+                ((isPlayer) ? ChatColor.AQUA : "") + "Stop Server: /SubServer Stop <Server>",
+                ((isPlayer) ? ChatColor.AQUA : "") + "Kill Server: /SubServer Kill <Server>",
+                ((isPlayer) ? ChatColor.AQUA : "") + "Start Server: /SubServer Start <Server>",
+                ((isPlayer) ? ChatColor.AQUA : "") + "Send Command: /SubServer Cmd <Server> <Command> " + ((isPlayer) ? ChatColor.ITALIC : "") + "[Args...]",
+                ((isPlayer) ? // if
+                        ((API.getSubServer(0).isRunning()) ? ChatColor.AQUA + "Teleport: /Go <Server> [Player]" : "")
+                        : //    else
+                        ((API.getSubServer(0).isRunning()) ? "Teleport: /Sub TP <Server> <Player>" : "")),
+        };
     }
 }

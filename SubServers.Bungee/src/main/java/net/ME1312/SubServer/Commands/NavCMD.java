@@ -1,4 +1,4 @@
-package net.ME1312.SubServer;
+package net.ME1312.SubServer.Commands;
 
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -6,11 +6,11 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.ChatColor;
 import net.ME1312.SubServer.Main;
 
-public class NavCommand extends Command {
+public class NavCMD extends Command {
 	private Main Main;
 	
-	public NavCommand(Main Main, String Command) {
-        super(Command);
+	public NavCMD(Main Main, String Command) {
+        super(Command, "bungeecord.command.server");
 		this.Main = Main;
     }
 	

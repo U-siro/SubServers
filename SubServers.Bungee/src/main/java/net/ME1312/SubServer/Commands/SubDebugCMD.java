@@ -1,4 +1,4 @@
-package net.ME1312.SubServer;
+package net.ME1312.SubServer.Commands;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
 import net.ME1312.SubServer.Main;
 
-public class SubDebugCommand extends Command {
+public class SubDebugCMD extends Command {
     private Main Main;
 
-    public SubDebugCommand(Main Main, String Command){
+    public SubDebugCMD(Main Main, String Command){
         super(Command, "SubServers.debug");
         this.Main = Main;
     }

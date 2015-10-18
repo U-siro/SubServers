@@ -26,14 +26,14 @@ import net.ME1312.SubServer.Libraries.Version.Version;
  *   Methods can be Requested<br>
  *
  * @author ME1312
- * @version 1.8.8e+
+ * @version 1.8.8l+
  *
  */
 @SuppressWarnings("static-access")
-public class API {
+public class SubAPI {
     private static Main Main;
 
-    protected API(Main Main) {
+    protected SubAPI(Main Main) {
         this.Main = Main;
     }
 

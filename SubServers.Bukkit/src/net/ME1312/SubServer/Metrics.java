@@ -61,7 +61,7 @@ public class Metrics {
             this.ServerSoftware = Bukkit.getName();
         }
         this.ServerUUID = UUID.fromString(config.getString("guid"));
-        this.MinecraftVersion = API.getMinecraftVersion();
+        this.MinecraftVersion = SubAPI.getMinecraftVersion();
         this.OperatingSystem = System.getProperty("os.name");
         this.OperatingSystemVersion = new Version(System.getProperty("os.version"));
 

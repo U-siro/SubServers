@@ -8,9 +8,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
-import net.ME1312.SubServer.API;
+import net.ME1312.SubServer.SubAPI;
 import net.ME1312.SubServer.Main;
-import net.ME1312.SubServer.Executable.StreamGobbler;
 import net.ME1312.SubServer.Libraries.Events.SubEvent;
 
 import org.bukkit.Bukkit;
@@ -143,7 +142,7 @@ public class SubServer implements Serializable {
 									}
 									for(Iterator<String> str = Main.SubServers.iterator(); str.hasNext(); ) {
 										String item = str.next();
-										sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getString("Settings.Server-IP") + " " + API.getSubServer(item).Port + " " + API.getSubServer(item).SharedChat);
+										sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getString("Settings.Server-IP") + " " + SubAPI.getSubServer(item).Port + " " + SubAPI.getSubServer(item).SharedChat);
 										try {
 											Thread.sleep(500);
 										} catch (InterruptedException e) {
@@ -420,8 +419,8 @@ public class SubServer implements Serializable {
 	 * @param player
 	 */
 	public void sendPlayer(Player player) {
-		if (API.getSubServer(0).isRunning()) {
-			API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + player.getName() + " " + Name);
+		if (SubAPI.getSubServer(0).isRunning()) {
+			SubAPI.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + player.getName() + " " + Name);
 		}
 	}
 	

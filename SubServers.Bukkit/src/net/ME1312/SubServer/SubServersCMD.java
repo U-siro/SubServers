@@ -2,10 +2,10 @@ package net.ME1312.SubServer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import net.ME1312.SubServer.Main;
 import net.ME1312.SubServer.Executable.Executable;
 import net.ME1312.SubServer.Executable.SubServer;
 import net.ME1312.SubServer.GUI.GUI;
@@ -31,12 +31,12 @@ public class SubServersCMD implements CommandExecutor {
 				if (args.length == 2) {
 					if (!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Start." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Start.*")) {
 						if (args[1].equals("~Proxy")) {
-							if (Main.config.getBoolean("Proxy.enabled") == true && !API.getSubServer(0).isRunning()) {
+							if (Main.config.getBoolean("Proxy.enabled") == true && !SubAPI.getSubServer(0).isRunning()) {
 								if (sender instanceof Player) {
-									API.getSubServer(args[1]).start((Player) sender);
+									SubAPI.getSubServer(args[1]).start((Player) sender);
 									((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Proxy-Start"));
 								} else {
-									API.getSubServer(args[1]).start();
+									SubAPI.getSubServer(args[1]).start();
 								}
 							} else {
 								if (sender instanceof Player) {
@@ -45,12 +45,12 @@ public class SubServersCMD implements CommandExecutor {
 									Bukkit.getLogger().info(Main.lprefix + Main.lang.getString("Lang.Commands.Proxy-Start-Error"));
 								}
 							}
-						} else if (Main.config.getBoolean("Servers." + args[1] + ".enabled") == true && !API.getSubServer(args[1]).isRunning()) {
+						} else if (Main.config.getBoolean("Servers." + args[1] + ".enabled") == true && !SubAPI.getSubServer(args[1]).isRunning()) {
 							if (sender instanceof Player) {
-								API.getSubServer(args[1]).start((Player) sender);
+								SubAPI.getSubServer(args[1]).start((Player) sender);
 								((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Server-Start"));
 							} else {
-								API.getSubServer(args[1]).start();
+								SubAPI.getSubServer(args[1]).start();
 							}
 						} else if (!Main.SubServers.contains(args[1])) {
 							if (sender instanceof Player) {
@@ -81,7 +81,7 @@ public class SubServersCMD implements CommandExecutor {
 				if (args.length >= 3) {
 					if (!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Send." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Send.*")) {
 						if (args[1].equals("~Proxy")) {
-							if (API.getSubServer(args[1]).isRunning()) {
+							if (SubAPI.getSubServer(args[1]).isRunning()) {
 								int i = 2;
 								String str = args[2];
 								if (args.length != 3) {
@@ -91,10 +91,10 @@ public class SubServersCMD implements CommandExecutor {
 									} while ((i + 1) != args.length);
 								}
 								if (sender instanceof Player) {
-									API.getSubServer(args[1]).sendCommand((Player) sender, str);
+									SubAPI.getSubServer(args[1]).sendCommand((Player) sender, str);
 									((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Send-Command-Proxy"));
 								} else {
-									API.getSubServer(args[1]).sendCommand(str);
+									SubAPI.getSubServer(args[1]).sendCommand(str);
 								}
 							} else {
 								if (sender instanceof Player) {
@@ -104,7 +104,7 @@ public class SubServersCMD implements CommandExecutor {
 								}
 							}
 						} else if (Main.SubServers.contains(args[1])) {
-							if (API.getSubServer(args[1]).isRunning()) {
+							if (SubAPI.getSubServer(args[1]).isRunning()) {
 								int i = 2;
 								String str = args[2];
 								if ((i + 1) != args.length) {
@@ -114,10 +114,10 @@ public class SubServersCMD implements CommandExecutor {
 									} while ((i + 1) != args.length);
 								}
 								if (sender instanceof Player) {
-									API.getSubServer(args[1]).sendCommand((Player) sender, str);
+									SubAPI.getSubServer(args[1]).sendCommand((Player) sender, str);
 									((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Send-Command-Server"));
 								} else {
-									API.getSubServer(args[1]).sendCommand(str);
+									SubAPI.getSubServer(args[1]).sendCommand(str);
 								}
 							} else {
 								if (sender instanceof Player) {
@@ -149,12 +149,12 @@ public class SubServersCMD implements CommandExecutor {
 				if (args.length == 2) {
 					if (!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Stop." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Stop.*")) {
 						if (args[1].equals("~Proxy")) {
-							if (API.getSubServer(args[1]).isRunning()) {
+							if (SubAPI.getSubServer(args[1]).isRunning()) {
 								if (sender instanceof Player) {
-									API.getSubServer(args[1]).stop((Player) sender);
+									SubAPI.getSubServer(args[1]).stop((Player) sender);
 									((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Proxy-Stop"));
 								} else {
-									API.getSubServer(args[1]).stop();
+									SubAPI.getSubServer(args[1]).stop();
 								}
 							} else {
 								if (sender instanceof Player) {
@@ -164,12 +164,12 @@ public class SubServersCMD implements CommandExecutor {
 								}
 							}
 						} else if (Main.SubServers.contains(args[1])) {
-							if (API.getSubServer(args[1]).isRunning()) {
+							if (SubAPI.getSubServer(args[1]).isRunning()) {
 								if (sender instanceof Player) {
-									API.getSubServer(args[1]).stop((Player) sender);
+									SubAPI.getSubServer(args[1]).stop((Player) sender);
 									((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Server-Stop"));
 								} else {
-									API.getSubServer(args[1]).stop();
+									SubAPI.getSubServer(args[1]).stop();
 								}
 							} else {
 								if (sender instanceof Player) {
@@ -201,12 +201,12 @@ public class SubServersCMD implements CommandExecutor {
 				if (args.length == 2) {
 					if (!(sender instanceof Player) || (((Player) sender).hasPermission("SubServer.Command.Kill." + args[1])) || ((Player) sender).hasPermission("SubServer.Command.Kill.*")) {
 						if (args[1].equals("~Proxy")) {
-							if (API.getSubServer(args[1]).isRunning()) {
+							if (SubAPI.getSubServer(args[1]).isRunning()) {
 								if (sender instanceof Player) {
-									API.getSubServer(args[1]).terminate((Player) sender);
+									SubAPI.getSubServer(args[1]).terminate((Player) sender);
 									((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Proxy-Kill"));
 								} else {
-									API.getSubServer(args[1]).terminate();
+									SubAPI.getSubServer(args[1]).terminate();
 								}
 							} else {
 								if (sender instanceof Player) {
@@ -216,12 +216,12 @@ public class SubServersCMD implements CommandExecutor {
 								}
 							}
 						} else if (Main.SubServers.contains(args[1])) {
-							if (API.getSubServer(args[1]).isRunning()) {
+							if (SubAPI.getSubServer(args[1]).isRunning()) {
 								if (sender instanceof Player) {
 									((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Server-Kill"));
-									API.getSubServer(args[1]).terminate((Player) sender);
+									SubAPI.getSubServer(args[1]).terminate((Player) sender);
 								} else {
-									API.getSubServer(args[1]).terminate();
+									SubAPI.getSubServer(args[1]).terminate();
 								}
 							} else {
 								if (sender instanceof Player) {
@@ -263,13 +263,13 @@ public class SubServersCMD implements CommandExecutor {
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
                         }
-                    } else if (!(API.getSubServer(args[1]).isRunning() || args[1].equalsIgnoreCase("~Lobby"))) {
+                    } else if (!(SubAPI.getSubServer(args[1]).isRunning() || args[1].equalsIgnoreCase("~Lobby"))) {
                         if (sender instanceof Player) {
                             ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
                         }
-                    } else if (!API.getSubServer("~Proxy").isRunning()) {
+                    } else if (!SubAPI.getSubServer("~Proxy").isRunning()) {
                         if (sender instanceof Player) {
                             ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
                         } else {
@@ -277,9 +277,9 @@ public class SubServersCMD implements CommandExecutor {
                         }
                     } else {
                         if (args[1].equalsIgnoreCase("~Lobby")) {
-                            API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + args[2] + " ~Lobby");
+                            SubAPI.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + args[2] + " ~Lobby");
                         } else {
-                            API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + args[2] + " " + args[1]);
+                            SubAPI.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + args[2] + " " + args[1]);
                         }
                         if (sender instanceof Player) {
                             ((Player)sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport"));
@@ -300,13 +300,13 @@ public class SubServersCMD implements CommandExecutor {
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
                         }
-                    } else if (!(API.getSubServer(args[1]).isRunning() || args[1].equalsIgnoreCase("~Lobby"))) {
+                    } else if (!(SubAPI.getSubServer(args[1]).isRunning() || args[1].equalsIgnoreCase("~Lobby"))) {
                         if (sender instanceof Player) {
                             ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
                         }
-                    } else if (!API.getSubServer("~Proxy").isRunning()) {
+                    } else if (!SubAPI.getSubServer("~Proxy").isRunning()) {
                         if (sender instanceof Player) {
                             ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
                         } else {
@@ -320,9 +320,9 @@ public class SubServersCMD implements CommandExecutor {
                         }
                     } else {
                         if (args[1].equalsIgnoreCase("~Lobby")) {
-                            API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + ((Player) sender).getName() + " ~Lobby");
+                            SubAPI.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + ((Player) sender).getName() + " ~Lobby");
                         } else {
-                            API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + ((Player) sender).getName() + " " + args[1]);
+                            SubAPI.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + ((Player) sender).getName() + " " + args[1]);
                         }
                         if (sender instanceof Player) {
                             ((Player)sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport"));
@@ -348,7 +348,7 @@ public class SubServersCMD implements CommandExecutor {
 					if (!Main.Servers.get(0).isRunning()) {
 						Main.Servers.remove(0);
 					} else {
-						API.getSubServer(0).sendCommandSilently("subconf@proxy resetplugin");
+						SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy resetplugin");
 					}
 					
 					int i = 0;
@@ -376,35 +376,35 @@ public class SubServersCMD implements CommandExecutor {
 						@Override
 						public void run() {
 							int i = 0;
-							if (API.getSubServer(0).isRunning()) {
+							if (SubAPI.getSubServer(0).isRunning()) {
 								try {
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport " + Main.lang.getString("Lang.Commands.Teleport").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport " + Main.lang.getString("Lang.Commands.Teleport").replace(" ", "%20"));
 									Thread.sleep(500);
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Server-List " + Main.lang.getString("Lang.Commands.Teleport-Server-List").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Server-List " + Main.lang.getString("Lang.Commands.Teleport-Server-List").replace(" ", "%20"));
 									Thread.sleep(500);
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Player-Error " + Main.lang.getString("Lang.Commands.Teleport-Player-Error").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Player-Error " + Main.lang.getString("Lang.Commands.Teleport-Player-Error").replace(" ", "%20"));
 									Thread.sleep(500);
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Config-Error " + Main.lang.getString("Lang.Commands.Teleport-Config-Error").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Config-Error " + Main.lang.getString("Lang.Commands.Teleport-Config-Error").replace(" ", "%20"));
 									Thread.sleep(500);
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Permission-Error " + Main.lang.getString("Lang.Commands.Teleport-Permission-Error").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Permission-Error " + Main.lang.getString("Lang.Commands.Teleport-Permission-Error").replace(" ", "%20"));
 									Thread.sleep(500);
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Offline-Error " + Main.lang.getString("Lang.Commands.Teleport-Offline-Error").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Offline-Error " + Main.lang.getString("Lang.Commands.Teleport-Offline-Error").replace(" ", "%20"));
 									Thread.sleep(500);
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Console-Error " + Main.lang.getString("Lang.Commands.Teleport-Console-Error").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Commands.Teleport-Console-Error " + Main.lang.getString("Lang.Commands.Teleport-Console-Error").replace(" ", "%20"));
 									Thread.sleep(500);
 								
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Register-Server " + Main.lang.getString("Lang.Proxy.Register-Server").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Register-Server " + Main.lang.getString("Lang.Proxy.Register-Server").replace(" ", "%20"));
 									Thread.sleep(500);
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Remove-Server " + Main.lang.getString("Lang.Proxy.Remove-Server").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Remove-Server " + Main.lang.getString("Lang.Proxy.Remove-Server").replace(" ", "%20"));
 									Thread.sleep(500);
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Reset-Storage " + Main.lang.getString("Lang.Proxy.Reset-Storage").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Reset-Storage " + Main.lang.getString("Lang.Proxy.Reset-Storage").replace(" ", "%20"));
 									Thread.sleep(500);
-                                    API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Chat-Format " + Main.lang.getString("Lang.Proxy.Chat-Format").replace(" ", "%20"));
+                                    SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Chat-Format " + Main.lang.getString("Lang.Proxy.Chat-Format").replace(" ", "%20"));
                                     Thread.sleep(500);
-									API.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Teleport " + Main.lang.getString("Lang.Proxy.Teleport").replace(" ", "%20"));
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy lang Lang.Proxy.Teleport " + Main.lang.getString("Lang.Proxy.Teleport").replace(" ", "%20"));
 									Thread.sleep(500);
 									
-									API.getSubServer(0).sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getString("Settings.Server-IP") + " " + Main.config.getString("Settings.Lobby-Port") + " true");
+									SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy addserver ~Lobby " + Main.config.getString("Settings.Server-IP") + " " + Main.config.getString("Settings.Lobby-Port") + " true");
 									Thread.sleep(500);
 								} catch (InterruptedException e) {
 									e.printStackTrace();
@@ -429,8 +429,8 @@ public class SubServersCMD implements CommandExecutor {
 
                             for(Iterator<String> str = Main.SubServers.iterator(); str.hasNext(); ) {
                                 String item = str.next();
-                                if (API.getSubServer(0).isRunning()) {
-                                    API.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getString("Settings.Server-IP") + " " + API.getSubServer(item).Port + " " + API.getSubServer(item).SharedChat);
+                                if (SubAPI.getSubServer(0).isRunning()) {
+                                    SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getString("Settings.Server-IP") + " " + SubAPI.getSubServer(item).Port + " " + SubAPI.getSubServer(item).SharedChat);
                                     try {
                                         Thread.sleep(500);
                                     } catch (InterruptedException e) {
@@ -459,26 +459,13 @@ public class SubServersCMD implements CommandExecutor {
 				}
 			} else if (args[0].equalsIgnoreCase("help")) {
 				if (sender instanceof Player) {
-					((Player) sender).sendMessage("Subservers Command List:");
-					((Player) sender).sendMessage("GUI: /Subserver [Server]");
-					((Player) sender).sendMessage("Reload Plugin: /SubServer Reload");
-					((Player) sender).sendMessage("Stop Server: /SubServer Stop <Server>");
-					((Player) sender).sendMessage("Kill Server: /SubServer Kill <Server>");
-					((Player) sender).sendMessage("Start Server: /SubServer Start <Server>");
-					((Player) sender).sendMessage("Send Command: /SubServer Cmd <Server> <Command> " + ChatColor.ITALIC + "[Args...]");
-					((Player) sender).sendMessage("Plugin Version: /SubServer Version");
-					if (API.getSubServer(0).isRunning()) ((Player) sender).sendMessage("Teleport: /Go <Server> [Player]");
+                    ((Player) sender).sendMessage(getHelp(true));
 				} else {
-					Bukkit.getLogger().info("Subservers Command List:");
-					Bukkit.getLogger().info("Reload Plugin: /SubServer Reload");
-					Bukkit.getLogger().info("Stop Server: /SubServer Stop <Server>");
-					Bukkit.getLogger().info("Kill Server: /SubServer Kill <Server>");
-					Bukkit.getLogger().info("Start Server: /SubServer Start <Server>");
-					Bukkit.getLogger().info("Send Command: /SubServer Cmd <Server> <Command> [Args...]");
-					Bukkit.getLogger().info("Plugin Version: /SubServer Version");
-					if (API.getSubServer(0).isRunning()) Bukkit.getLogger().info("Teleport: /Sub TP <Server> <Player>");
+                    for (Iterator<String> str = Arrays.<String>asList(getHelp(false)).iterator(); str.hasNext(); ) {
+                        Bukkit.getLogger().info(str.next());
+                    }
 				}
-			} else if (Main.config.getBoolean("Settings.GUI.enabled") && (sender instanceof Player)) {
+			} else if (((Player) sender).hasPermission("SubServer.Command") && Main.config.getBoolean("Settings.GUI.Enabled") && (sender instanceof Player)) {
 				if (Main.SubServers.contains(args[0])) {
 					new GUI((Player) sender, 0, args[0], Main);
 				} else {
@@ -496,27 +483,32 @@ public class SubServersCMD implements CommandExecutor {
                 new GUI((Player) sender, 0, null, Main);
 			} else {
 				if (sender instanceof Player) {
-					((Player) sender).sendMessage("Subservers Command List:");
-					((Player) sender).sendMessage("GUI: /Subserver [Server]");
-					((Player) sender).sendMessage("Reload Plugin: /SubServer Reload");
-					((Player) sender).sendMessage("Stop Server: /SubServer Stop <Server>");
-					((Player) sender).sendMessage("Kill Server: /SubServer Kill <Server>");
-					((Player) sender).sendMessage("Start Server: /SubServer Start <Server>");
-					((Player) sender).sendMessage("Send Command: /SubServer Cmd <Server> <Command> " + ChatColor.ITALIC + "[Args...]");
-					((Player) sender).sendMessage("Plugin Version: /SubServer Version");
-					if (API.getSubServer(0).isRunning()) ((Player) sender).sendMessage("Teleport: /Go <Server> [Player]");
+                    ((Player) sender).sendMessage(getHelp(true));
 				} else {
-					Bukkit.getLogger().info("Main SubServer Command");
-					Bukkit.getLogger().info("Reload Plugin: /SubServer Reload");
-					Bukkit.getLogger().info("Stop Server: /SubServer Stop <Server>");
-					Bukkit.getLogger().info("Kill Server: /SubServer Kill <Server>");
-					Bukkit.getLogger().info("Start Server: /SubServer Start <Server>");
-					Bukkit.getLogger().info("Send Command: /SubServer Cmd <Server> <Command> [Args...]");
-					Bukkit.getLogger().info("Plugin Version: /SubServer Version");
-                    if (API.getSubServer(0).isRunning()) Bukkit.getLogger().info("Teleport: /Sub TP <Server> <Player>");
+					for (Iterator<String> str = Arrays.<String>asList(getHelp(false)).iterator(); str.hasNext(); ) {
+                        Bukkit.getLogger().info(str.next());
+                    }
 				}
 			}
 		}
 		return true;
 	}
+
+    private String[] getHelp(boolean isPlayer) {
+        return new String[]{
+                ((isPlayer) ? ChatColor.AQUA.toString() : "") + "SubServers Command List:",
+                ((isPlayer) ? ChatColor.AQUA.toString() : "") + "GUI: /SubServer [Server]",
+                ((isPlayer) ? ChatColor.AQUA.toString() : "") + "Help: /SubServer Help",
+                ((isPlayer) ? ChatColor.AQUA.toString() : "") + "Reload Plugin: /SubServer Reload",
+                ((isPlayer) ? ChatColor.AQUA.toString() : "") + "Plugin Version: /SubServer Version",
+                ((isPlayer) ? ChatColor.AQUA.toString() : "") + "Stop Server: /SubServer Stop <Server>",
+                ((isPlayer) ? ChatColor.AQUA.toString() : "") + "Kill Server: /SubServer Kill <Server>",
+                ((isPlayer) ? ChatColor.AQUA.toString() : "") + "Start Server: /SubServer Start <Server>",
+                ((isPlayer) ? ChatColor.AQUA.toString() : "") + "Send Command: /SubServer Cmd <Server> <Command> " + ((isPlayer) ? ChatColor.ITALIC.toString() : "") + "[Args...]",
+                ((isPlayer) ? // if
+                        ((SubAPI.getSubServer(0).isRunning()) ? ChatColor.AQUA + "Teleport: /Go <Server> [Player]" : "")
+                        : //    else
+                        ((SubAPI.getSubServer(0).isRunning()) ? "Teleport: /Sub TP <Server> <Player>" : "")),
+        };
+    }
 }
