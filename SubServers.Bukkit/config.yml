@@ -18,7 +18,7 @@ Proxy:
     enabled: false
     run-on-launch: true
     dir: './Folder'
-    exec: 'java -Djline.terminal=jline.UnsupportedTerminal -jar BungeeCord.jar'
+    exec: 'java -Djline.terminal=jline.UnsupportedTerminal -jar SubServers.Bungee.jar'
     log: true
 #
 # This Is the List of your Servers

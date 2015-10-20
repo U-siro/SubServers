@@ -4,7 +4,7 @@
 
   <groupId>net.ME1312</groupId>
   <artifactId>SubServers</artifactId>
-  <version>1.8.8l</version>
+  <version>1.8.8m</version>
   <packaging>jar</packaging>
 
   <name>SubServers</name>
@@ -36,12 +36,5 @@
   </build>
     
   <dependencies>
-    <dependency>
-      <groupId>net.md-5</groupId>
-      <artifactId>bungeecord-api</artifactId>
-      <version>1.8-SNAPSHOT</version>
-      <type>jar</type>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
 </project>

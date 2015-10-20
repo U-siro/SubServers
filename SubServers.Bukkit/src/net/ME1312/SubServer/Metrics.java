@@ -65,18 +65,6 @@ public class Metrics {
         this.OperatingSystem = System.getProperty("os.name");
         this.OperatingSystemVersion = new Version(System.getProperty("os.version"));
 
-        try {
-            int response = submitData();
-            if (response != 200) {
-                Bukkit.getLogger().severe("Problem sending info to ME1312.net: HTTP Error " + response);
-                Bukkit.getLogger().severe("See http://src.ME1312.net/Error/?error=" + response + " For more information about this Error.");
-            } else if (config.getBoolean("debug")) {
-                Bukkit.getLogger().info("http://src.ME1312.net responded with code " + response);
-            }
-        } catch (IOException e) {
-            Bukkit.getLogger().severe("Could not Connect to ME1312.net! is it down?");
-        }
-
         new BukkitRunnable() {
             public void run() {
                 try {
