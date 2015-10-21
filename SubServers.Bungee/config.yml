@@ -5,7 +5,9 @@ permissions:
   - bungeecord.command.server
   - bungeecord.command.list
   admin:
+  - bungeecord.command.find
   - bungeecord.command.alert
+  - bungeecord.command.send
   - bungeecord.command.end
   - bungeecord.command.ip
   - bungeecord.command.reload
@@ -13,13 +15,13 @@ timeout: 30000
 online_mode: true
 servers:
   '~Lobby':
-    motd: '&1Just another BungeeCord - Forced Host'
+    motd: '&aJust another SubServer'
     address: localhost:25566
     restricted: false
     use-shared-chat: false
 listeners:
 - query_port: 25577
-  motd: '&1Another Bungee server'
+  motd: '&1Another SubServer Proxy'
   tab_list: GLOBAL_PING
   query_enabled: false
   forced_hosts:
@@ -32,11 +34,10 @@ listeners:
   max_players: 1
   tab_size: 60
   force_default_server: true
-disabled_commands:
-- disabledcommandhere
+disabled_commands: []
 network_compression_threshold: 256
 groups:
-  md_5:
+  ME1312:
   - admin
 connection_throttle: 4000
 stats: 9b8926b9-a8a1-453e-88d9-9c66384518f8

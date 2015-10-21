@@ -1,16 +1,18 @@
-package net.ME1312.SubServer;
+package net.ME1312.SubServer.Commands;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.ME1312.SubServer.FakeProxyServer;
+import net.ME1312.SubServer.SubServerInfo;
 import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 
 public class SubDebugCMD extends Command {
-    private FakeProxyServer FakeProxyServer;
+    private net.ME1312.SubServer.FakeProxyServer FakeProxyServer;
 
     public SubDebugCMD(FakeProxyServer FakeProxyServer, String Command){
         super(Command, "SubServers.debug");

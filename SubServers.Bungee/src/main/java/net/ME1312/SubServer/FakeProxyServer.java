@@ -4,6 +4,10 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.util.*;
 
+import net.ME1312.SubServer.Commands.FindCMD;
+import net.ME1312.SubServer.Commands.ListCMD;
+import net.ME1312.SubServer.Commands.NavCMD;
+import net.ME1312.SubServer.Commands.SubDebugCMD;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.api.plugin.PluginDescription;
@@ -12,9 +16,6 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
-/*
-    The Class which pretends to be Bungee's Main Class!
- */
 public class FakeProxyServer extends BungeeCord {
     public List<String> SubServers = new ArrayList<String>();
     public HashMap<String, SubServerInfo> ConfigServers = new HashMap<String, SubServerInfo>();
@@ -25,17 +26,24 @@ public class FakeProxyServer extends BungeeCord {
     public Configuration configuration;
     public HashMap<String, String> lang = new HashMap<String, String>();
 
-    public PluginDescription Plugin;
+    public final PluginDescription Plugin;
 
     protected FakeProxyServer() throws Exception {
-        Plugin = new PluginDescription();
+        super();
+
+        PluginDescription Plugin = new PluginDescription();
         Plugin.setName("SubServers");
         Plugin.setAuthor("ME1312");
         Plugin.setVersion("1.8.8m");
+        this.Plugin = Plugin;
 
+        EnablePlugin();
+    }
+
+    protected void EnablePlugin() {
         lprefix = Plugin.getName() + " \u00BB ";
 
-        System.out.println("Enabling " + Plugin.getName() + " v" + Plugin.getVersion() + " by " + Plugin.getAuthor());
+        System.out.println("Enabled " + Plugin.getName() + " v" + Plugin.getVersion() + " by " + Plugin.getAuthor());
 
         try {
             configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File("./config.yml"));
@@ -48,6 +56,9 @@ public class FakeProxyServer extends BungeeCord {
             }
         }
 
+        if (!(new File("./modules.yml").exists())) copyFromJar("modules.yml", "./modules.yml");
+        if (!(new File("./modules").exists())) new File("./modules").mkdirs();
+
         for(Iterator<String> str = configuration.getSection("servers").getKeys().iterator(); str.hasNext(); ) {
             String item = str.next();
             ConfigServers.put(item, new SubServerInfo((BungeeServerInfo)constructServerInfo(item, new InetSocketAddress(configuration.getString("servers." + item + ".address").split(":")[0],
@@ -55,33 +66,16 @@ public class FakeProxyServer extends BungeeCord {
                     configuration.getBoolean("servers." + item + ".restricted")), configuration.getBoolean("servers." + item + ".use-shared-chat")));
         }
 
-        getPluginManager().registerCommand(null, new SubDebugCMD(this, "subconf@proxy"));
         getPluginManager().registerListener(null, new PlayerListener(this));
+        getPluginManager().registerCommand(null, new SubDebugCMD(this, "subconf@proxy"));
+
+        if (!configuration.getStringList("disabled_commands").contains("/server")) getPluginManager().registerCommand(null, new NavCMD(this, "server"));
+        if (!configuration.getStringList("disabled_commands").contains("/glist")) getPluginManager().registerCommand(null, new ListCMD(this, "glist"));
+        if (!configuration.getStringList("disabled_commands").contains("/find")) getPluginManager().registerCommand(null, new FindCMD(this, "find"));
     }
 
-    @Override
-    public String getName() {
-        return Plugin.getName() + " Proxy";
-    }
-
-    @Override
-    public String getVersion() {
-        return Plugin.getVersion();
-    }
-
-    @Override
-    public Map<String, ServerInfo> getServers() {
-        HashMap<String, ServerInfo> map = new HashMap<String, ServerInfo>();
-        map.putAll(ConfigServers);
-        map.remove("~Lobby");
-        map.putAll(ServerInfo);
-        map.putAll(PlayerServerInfo);
-        return map;
-    }
-
-    @Override
-    public ServerInfo getServerInfo(String server) {
-        return getServers().get(server);
+    protected void DisablePlugin() {
+        System.out.println(Plugin.getName() + " Proxy Shutting Down...");
     }
 
     private void copyFromJar(String resource, String destination) {
@@ -99,5 +93,31 @@ public class FakeProxyServer extends BungeeCord {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public String getName() {
+        return Plugin.getName() + "@BungeeCord";
+    }
+
+    @Override
+    public Map<String, ServerInfo> getServers() {
+        HashMap<String, ServerInfo> map = new HashMap<String, ServerInfo>();
+        map.putAll(ConfigServers);
+        map.remove("~Lobby");
+        map.putAll(ServerInfo);
+        map.putAll(PlayerServerInfo);
+        return map;
+    }
+
+    @Override
+    public ServerInfo getServerInfo(String server) {
+        return getServers().get(server);
+    }
+
+    @Override
+    public void stop(String reason) {
+        DisablePlugin();
+        super.stop(reason);
     }
 }

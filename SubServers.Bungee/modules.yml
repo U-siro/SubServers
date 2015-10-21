@@ -1,0 +1,5 @@
+modules:
+- jenkins://cmd_alert
+- jenkins://cmd_send
+- jenkins://reconnect_yaml
+version: 2
