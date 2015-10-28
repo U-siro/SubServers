@@ -7,7 +7,7 @@ import djxy.controllers.ResourceFactory;
 import djxy.models.ComponentManager;
 import djxy.models.Form;
 import djxy.models.resource.Resource;
-import net.ME1312.SubServer.API;
+import net.ME1312.SubServer.SubAPI;
 import net.ME1312.SubServer.Executable.SubServer;
 import net.ME1312.SubServer.GUI.GUIHandler;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -35,7 +35,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
             file.delete();
         }
 
-        CommentedConfigurationNode lang = API.getLang();
+        CommentedConfigurationNode lang = SubAPI.getLang();
 
         PrintWriter writer = new PrintWriter(file, "UTF-8");
 
@@ -328,7 +328,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
 
     public void ServerSelectionWindow(Player player, int page, boolean remove) {
         List<SubServer> SubServers = new ArrayList<SubServer>();
-        SubServers.addAll(API.getSubServers());
+        SubServers.addAll(SubAPI.getSubServers());
         if (true) {
             UUID uuid = player.getUniqueId();
             int min = (page * 17);
@@ -454,7 +454,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
     public void ServerAdminWindow(Player player, SubServer server) { ServerAdminWindow(player, server, false); }
 
     public void ServerAdminWindow(Player player, SubServer server, boolean remove) {
-        CommentedConfigurationNode lang = API.getLang();
+        CommentedConfigurationNode lang = SubAPI.getLang();
         UUID uuid = player.getUniqueId();
         if (true) {
             try {
@@ -619,7 +619,7 @@ public class BetterGUI implements GUIHandler, ComponentManager {
     @Override
     public void receiveForm(String uuid, Form form) {
         List<SubServer> SubServers = new ArrayList<SubServer>();
-        SubServers.addAll(API.getSubServers());
+        SubServers.addAll(SubAPI.getSubServers());
 
         final String button = form.getButtonId();
         final Player player = Main.game.getServer().getPlayer(UUID.fromString(uuid)).get();
@@ -648,24 +648,24 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 if (form.getInput("__page") != null && StringUtils.isNumeric(form.getInput("__page"))) {
                     ServerSelectionWindow(player, Integer.parseInt(form.getInput("__page")) - 2, true);
 
-                } else if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server"))))) {
-                    ServerSelectionWindow(player, (int) Math.floor(SubServers.indexOf(API.getSubServer(Integer.parseInt(form.getInput("_server")))) / 17), true);
+                } else if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))))) {
+                    ServerSelectionWindow(player, (int) Math.floor(SubServers.indexOf(SubAPI.getSubServer(Integer.parseInt(form.getInput("_server")))) / 17), true);
 
                 } else {
                     ServerSelectionWindow(player, 0, true);
                 }
                 break;
             case "_teleport":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(SubAPI.getSubServer(Integer.parseInt(form.getInput("_server")))) && SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
                     GUI.removeComponent(uuid, "__window");
-                    API.getSubServer(Integer.parseInt(form.getInput("_server"))).sendPlayer(player);
+                    SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).sendPlayer(player);
                 }
                 break;
 
             case "_start":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && !API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
-                    API.getSubServer(Integer.parseInt(form.getInput("_server"))).start(player);
-                    LoaderWindow(player, 2, true, API.getSubServer(Integer.parseInt(form.getInput("_server"))));
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(SubAPI.getSubServer(Integer.parseInt(form.getInput("_server")))) && !SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                    SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).start(player);
+                    LoaderWindow(player, 2, true, SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))));
                     Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
 
                         @Override
@@ -683,15 +683,15 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 break;
 
             case "_stop":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
-                    LoaderWindow(player, 2, true, API.getSubServer(Integer.parseInt(form.getInput("_server"))));
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(SubAPI.getSubServer(Integer.parseInt(form.getInput("_server")))) && SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                    LoaderWindow(player, 2, true, SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))));
                     Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
 
                         @Override
                         public void run() {
                             try {
-                                if (API.getSubServer(Integer.parseInt(form.getInput("_server"))).stop(player)) {
-                                    API.getSubServer(Integer.parseInt(form.getInput("_server"))).waitFor();
+                                if (SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).stop(player)) {
+                                    SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).waitFor();
                                     Thread.sleep(500);
                                 } else {
                                     Thread.sleep(1500);
@@ -707,9 +707,9 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 break;
 
             case "_kill":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
-                    API.getSubServer(Integer.parseInt(form.getInput("_server"))).terminate(player);
-                    LoaderWindow(player, 2, true, API.getSubServer(Integer.parseInt(form.getInput("_server"))));
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(SubAPI.getSubServer(Integer.parseInt(form.getInput("_server")))) && SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                    SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).terminate(player);
+                    LoaderWindow(player, 2, true, SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))));
                     Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
 
                         @Override
@@ -727,15 +727,15 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 break;
 
             case "_send":
-                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(API.getSubServer(Integer.parseInt(form.getInput("_server")))) && API.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
+                if (form.getInput("_server") != null && StringUtils.isNumeric(form.getInput("_server")) && SubServers.contains(SubAPI.getSubServer(Integer.parseInt(form.getInput("_server")))) && SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).isRunning()) {
                     if (form.getInput("_cmd") != null && StringUtils.isNotEmpty(form.getInput("_cmd"))) {
                         if (form.getInput("_cmd").startsWith("/")) {
-                            API.getSubServer(Integer.parseInt(form.getInput("_server"))).sendCommand(player, form.getInput("_cmd").substring(1));
+                            SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).sendCommand(player, form.getInput("_cmd").substring(1));
                         } else {
-                            API.getSubServer(Integer.parseInt(form.getInput("_server"))).sendCommand(player, form.getInput("_cmd"));
+                            SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))).sendCommand(player, form.getInput("_cmd"));
                         }
                     }
-                    LoaderWindow(player, 2, true, API.getSubServer(Integer.parseInt(form.getInput("_server"))));
+                    LoaderWindow(player, 2, true, SubAPI.getSubServer(Integer.parseInt(form.getInput("_server"))));
                     Main.game.getScheduler().createTaskBuilder().async().execute(new Runnable() {
 
                         @Override
@@ -753,8 +753,8 @@ public class BetterGUI implements GUIHandler, ComponentManager {
                 break;
 
             default:
-                if (SubServers.contains(API.getSubServer(StringUtils.stripEnd(button.replace("__server_", ""), " ")))) {
-                    ServerAdminWindow(player, API.getSubServer(StringUtils.stripEnd(button.replace("__server_", ""), " ")), true);
+                if (SubServers.contains(SubAPI.getSubServer(StringUtils.stripEnd(button.replace("__server_", ""), " ")))) {
+                    ServerAdminWindow(player, SubAPI.getSubServer(StringUtils.stripEnd(button.replace("__server_", ""), " ")), true);
                 }
                 break;
         }

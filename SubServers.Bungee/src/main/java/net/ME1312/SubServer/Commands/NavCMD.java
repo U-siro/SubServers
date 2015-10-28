@@ -21,7 +21,7 @@ public class NavCMD extends Command {
 		} else if (args.length < 1) {
 			String String = "";
 			if (FakeProxyServer.ServerInfo.keySet().size() > 0) String = FakeProxyServer.ServerInfo.keySet().toString().replace("[", "").replace("]", "") + ", ";
-			if (FakeProxyServer.ConfigServers.keySet().size() > 0) String = String + (FakeProxyServer.getServers().keySet().toString().replace("{", "").replace("}", "") + ", ").replace("default, ", "");
+			if (FakeProxyServer.ConfigServers.keySet().size() > 0) String = String + (FakeProxyServer.ConfigServers.keySet().toString().replace("[", "").replace("]", "") + ", ").replace("~Lobby, ", "");
 			if (FakeProxyServer.PlayerServerInfo.keySet().size() > 0) String = String +
 					FakeProxyServer.lang.get("Lang.Commands.Teleport-Server-List").split("\\|\\|\\|")[2].replace("$int$", Integer.toString(FakeProxyServer.PlayerServerInfo.keySet().size()));
 
@@ -34,7 +34,7 @@ public class NavCMD extends Command {
 				FakeProxyServer.getLogger().info(String);
 			}
 
-		} else if (FakeProxyServer.ConfigServers.keySet().contains(args[0]) && !args[0].equalsIgnoreCase("default")) {
+		} else if (FakeProxyServer.ConfigServers.keySet().contains(args[0]) && !args[0].equalsIgnoreCase("~Lobby")) {
 			if (args.length > 1) {
 				if (FakeProxyServer.getPlayer(sender.getName()) == null || FakeProxyServer.getPlayer(sender.getName()).hasPermission("bungeecord.command.send") || FakeProxyServer.getPlayer(sender.getName()).hasPermission("SubServers.Teleport.Others")) {
 					if (FakeProxyServer.getPlayer(args[1]) == null) {

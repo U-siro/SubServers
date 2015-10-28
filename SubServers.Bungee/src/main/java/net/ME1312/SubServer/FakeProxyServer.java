@@ -26,7 +26,8 @@ public class FakeProxyServer extends BungeeCord {
     public Configuration configuration;
     public HashMap<String, String> lang = new HashMap<String, String>();
 
-    public final PluginDescription Plugin;
+    private final PluginDescription Plugin;
+    private boolean running = false;
 
     protected FakeProxyServer() throws Exception {
         super();
@@ -34,48 +35,57 @@ public class FakeProxyServer extends BungeeCord {
         PluginDescription Plugin = new PluginDescription();
         Plugin.setName("SubServers");
         Plugin.setAuthor("ME1312");
-        Plugin.setVersion("1.8.8m");
+        Plugin.setVersion("1.8.8n");
         this.Plugin = Plugin;
 
         EnablePlugin();
     }
 
+    // Plugin Methods
+
     protected void EnablePlugin() {
-        lprefix = Plugin.getName() + " \u00BB ";
+        if (!running) {
+            lprefix = Plugin.getName() + " \u00BB ";
+            running = true;
+            System.out.println("Enabled " + Plugin.getName() + " v" + Plugin.getVersion() + " by " + Plugin.getAuthor());
 
-        System.out.println("Enabled " + Plugin.getName() + " v" + Plugin.getVersion() + " by " + Plugin.getAuthor());
-
-        try {
-            configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File("./config.yml"));
-        } catch (IOException e) {
-            copyFromJar("config.yml", "./config.yml");
             try {
                 configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File("./config.yml"));
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException e) {
+                copyFromJar("config.yml", "./config.yml");
+                try {
+                    configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File("./config.yml"));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
+
+            if (!(new File("./modules.yml").exists())) copyFromJar("modules.yml", "./modules.yml");
+            if (!(new File("./modules").exists())) new File("./modules").mkdirs();
+
+            for (Iterator<String> str = configuration.getSection("servers").getKeys().iterator(); str.hasNext(); ) {
+                String item = str.next();
+                ConfigServers.put(item, new SubServerInfo((BungeeServerInfo) constructServerInfo(item, new InetSocketAddress(configuration.getString("servers." + item + ".address").split(":")[0],
+                                Integer.parseInt(configuration.getString("servers." + item + ".address").split(":")[1])), configuration.getString("servers." + item + ".motd"),
+                        configuration.getBoolean("servers." + item + ".restricted")), configuration.getBoolean("servers." + item + ".use-shared-chat")));
+            }
+
+            getPluginManager().registerListener(null, new PlayerListener(this));
+            getPluginManager().registerCommand(null, new SubDebugCMD(this, "subconf@proxy"));
+
+            if (!configuration.getStringList("disabled_commands").contains("/go")) getPluginManager().registerCommand(null, new NavCMD(this, "go"));
+            if (!configuration.getStringList("disabled_commands").contains("/server")) getPluginManager().registerCommand(null, new NavCMD(this, "server"));
+            if (!configuration.getStringList("disabled_commands").contains("/glist")) getPluginManager().registerCommand(null, new ListCMD(this, "glist"));
+            if (!configuration.getStringList("disabled_commands").contains("/find")) getPluginManager().registerCommand(null, new FindCMD(this, "find"));
         }
-
-        if (!(new File("./modules.yml").exists())) copyFromJar("modules.yml", "./modules.yml");
-        if (!(new File("./modules").exists())) new File("./modules").mkdirs();
-
-        for(Iterator<String> str = configuration.getSection("servers").getKeys().iterator(); str.hasNext(); ) {
-            String item = str.next();
-            ConfigServers.put(item, new SubServerInfo((BungeeServerInfo)constructServerInfo(item, new InetSocketAddress(configuration.getString("servers." + item + ".address").split(":")[0],
-                            Integer.parseInt(configuration.getString("servers." + item + ".address").split(":")[1])), configuration.getString("servers." + item + ".motd"),
-                    configuration.getBoolean("servers." + item + ".restricted")), configuration.getBoolean("servers." + item + ".use-shared-chat")));
-        }
-
-        getPluginManager().registerListener(null, new PlayerListener(this));
-        getPluginManager().registerCommand(null, new SubDebugCMD(this, "subconf@proxy"));
-
-        if (!configuration.getStringList("disabled_commands").contains("/server")) getPluginManager().registerCommand(null, new NavCMD(this, "server"));
-        if (!configuration.getStringList("disabled_commands").contains("/glist")) getPluginManager().registerCommand(null, new ListCMD(this, "glist"));
-        if (!configuration.getStringList("disabled_commands").contains("/find")) getPluginManager().registerCommand(null, new FindCMD(this, "find"));
     }
 
     protected void DisablePlugin() {
-        System.out.println(Plugin.getName() + " Proxy Shutting Down...");
+        if (running) {
+            running = false;
+
+            System.out.println(Plugin.getName() + " Proxy Shutting Down...");
+        }
     }
 
     private void copyFromJar(String resource, String destination) {
@@ -95,9 +105,15 @@ public class FakeProxyServer extends BungeeCord {
         }
     }
 
+    // API Methods
+
     @Override
     public String getName() {
         return Plugin.getName() + "@BungeeCord";
+    }
+
+    public PluginDescription getPluginInfo() {
+        return Plugin;
     }
 
     @Override
@@ -110,9 +126,28 @@ public class FakeProxyServer extends BungeeCord {
         return map;
     }
 
+    public HashMap<String, SubServerInfo> getSubServers() {
+        HashMap<String, SubServerInfo> map = new HashMap<String, SubServerInfo>();
+        map.putAll(ConfigServers);
+        map.remove("~Lobby");
+        map.putAll(ServerInfo);
+        map.putAll(PlayerServerInfo);
+        return map;
+    }
+
     @Override
     public ServerInfo getServerInfo(String server) {
         return getServers().get(server);
+    }
+
+    public SubServerInfo getSubServerInfo(String server) {
+        return getSubServers().get(server);
+    }
+
+    @Override
+    public void stop() {
+        DisablePlugin();
+        super.stop();
     }
 
     @Override

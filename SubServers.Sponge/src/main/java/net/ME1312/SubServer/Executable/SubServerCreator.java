@@ -1,16 +1,14 @@
 package net.ME1312.SubServer.Executable;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import net.ME1312.SubServer.Libraries.ChatColor;
+import net.ME1312.SubServer.SubAPI;
 import org.spongepowered.api.entity.living.player.Player;
 
-import net.ME1312.SubServer.API;
 import net.ME1312.SubServer.Main;
-import net.ME1312.SubServer.Libraries.Events.SubEvent;
 import net.ME1312.SubServer.Libraries.Version.Version;
 import org.spongepowered.api.text.Texts;
 
@@ -317,7 +315,7 @@ public class SubServerCreator {
                                     Main.SubServers.add(Name);
 
                                     Main.Servers.get(PID).start();
-                                    if (API.getSubServer(0).isRunning()) API.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Port);
+                                    if (SubAPI.getSubServer(0).isRunning()) SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Port);
 
                                     Main.config.getNode("Servers", Name, "enabled").setValue(true);
                                     Main.config.getNode("Servers", Name, "port").setValue(Port);
@@ -374,7 +372,7 @@ public class SubServerCreator {
                                     Main.SubServers.add(Name);
 
                                     Main.Servers.get(PID).start();
-                                    if (API.getSubServer(0).isRunning()) API.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Port);
+                                    if (SubAPI.getSubServer(0).isRunning()) SubAPI.getSubServer(0).sendCommandSilently("subconf@proxy addserver " + Name + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + Port);
 
                                     Main.config.getNode("Servers", Name, "enabled").setValue(true);
                                     Main.config.getNode("Servers", Name, "port").setValue(Port);

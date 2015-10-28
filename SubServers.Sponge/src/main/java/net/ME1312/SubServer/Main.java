@@ -25,15 +25,11 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.util.command.CommandCallable;
-import org.spongepowered.api.util.command.args.CommandElement;
 import org.spongepowered.api.util.command.args.GenericArguments;
-import org.spongepowered.api.util.command.spec.CommandExecutor;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 
-@Plugin(id="SubServers", name="SubServers", version="1.8.8m")
+@Plugin(id="SubServers", name="SubServers", version="1.8.8n")
 public class Main {
     public static SubServerCreator ServerCreator;
 
@@ -78,8 +74,8 @@ public class Main {
         PluginVersion = new Version(Plugin.getVersion());
         MCVersion = new Version(event.getGame().getPlatform().getMinecraftVersion().getName());
 
-        /* API Register */
-        new API(this);
+        /* SubAPI Register */
+        new SubAPI(this);
     }
 
     @Listener
@@ -155,12 +151,12 @@ public class Main {
         for(Iterator<String> items = SubServers.iterator(); items.hasNext(); ) {
             String item = items.next();
             if (config.getNode("Servers", item, "enabled").getBoolean() && config.getNode("Servers", item, "run-on-launch").getBoolean()) {
-                API.getSubServer(item).start();
+                SubAPI.getSubServer(item).start();
             }
         }
 
         if (config.getNode("Proxy", "enabled").getBoolean() && config.getNode("Proxy", "run-on-launch").getBoolean()) {
-            API.getSubServer(0).start();
+            SubAPI.getSubServer(0).start();
         }
     }
 
@@ -184,16 +180,16 @@ public class Main {
                 Thread.sleep(1000);
             }
 
-            if (API.getSubServer(0).isRunning()) {
-                API.getSubServer(0).stop();
+            if (SubAPI.getSubServer(0).isRunning()) {
+                SubAPI.getSubServer(0).stop();
                 Servers.get(PIDs.get("~Proxy")).waitFor();
             }
             ArrayList<String> SubServersStore = new ArrayList<String>();
             SubServersStore.addAll(SubServers);
             for (Iterator<String> items = SubServersStore.iterator(); items.hasNext();) {
                 String item = items.next();
-                if (API.getSubServer(item).isRunning()) {
-                    API.getSubServer(item).stop();
+                if (SubAPI.getSubServer(item).isRunning()) {
+                    SubAPI.getSubServer(item).stop();
                     Servers.get(PIDs.get(item)).waitFor();
                     if (Servers.get(PIDs.get(item)).Temporary) {
                         Thread.sleep(500);

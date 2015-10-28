@@ -31,7 +31,7 @@ public class ListCMD extends Command {
 
         for (Iterator<SubServerInfo> servers = FakeProxyServer.ConfigServers.values().iterator(); servers.hasNext(); ) {
             ServerInfo server = servers.next();
-            if (!server.getName().equalsIgnoreCase("default")) {
+            if (!server.getName().equalsIgnoreCase("~Lobby")) {
                 players.put(server.getName(), new ArrayList<ProxiedPlayer>(server.getPlayers()));
                 playerlist.put(server.getName(), server.getPlayers().size());
                 total = total + server.getPlayers().size();

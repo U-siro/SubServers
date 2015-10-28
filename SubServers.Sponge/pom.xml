@@ -7,7 +7,7 @@
     <groupId>SubServers</groupId>
     <artifactId>SubServers.Sponge</artifactId>
     <packaging>pom</packaging>
-    <version>1.8.8m</version>
+    <version>1.8.8n</version>
     <modules>
         <module>BetterGUI</module>
     </modules>

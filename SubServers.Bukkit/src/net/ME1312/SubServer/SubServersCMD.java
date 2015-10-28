@@ -253,25 +253,25 @@ public class SubServersCMD implements CommandExecutor {
                 if (args.length == 3) {
                     if (!(Main.SubServers.contains(args[1]) || args[1].equalsIgnoreCase("~Lobby"))) {
                         if (sender instanceof Player) {
-                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Config-Error"));
+                            ((Player) sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Config-Error"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Config-Error"));
                         }
-                    } else if (!(sender instanceof Player) || (((Player)sender).hasPermission("subserver.command.teleport.others.*") || ((Player)sender).hasPermission("subserver.command.teleport.others." + args[1]))) {
+                    } else if ((sender instanceof Player) && (!((Player) sender).hasPermission("subserver.command.teleport.others.*")) && (!((Player) sender).hasPermission("subserver.command.teleport.others." + args[1]))) {
                         if (sender instanceof Player) {
-                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
+                            ((Player) sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
                         }
-                    } else if (!(SubAPI.getSubServer(args[1]).isRunning() || args[1].equalsIgnoreCase("~Lobby"))) {
+                    } else if (!args[1].equalsIgnoreCase("~Lobby") && !(SubAPI.getSubServer(args[1]).isRunning())) {
                         if (sender instanceof Player) {
-                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
+                            ((Player) sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
                         }
                     } else if (!SubAPI.getSubServer("~Proxy").isRunning()) {
                         if (sender instanceof Player) {
-                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
+                            ((Player) sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
                         }
@@ -282,7 +282,7 @@ public class SubServersCMD implements CommandExecutor {
                             SubAPI.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + args[2] + " " + args[1]);
                         }
                         if (sender instanceof Player) {
-                            ((Player)sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport"));
+                            ((Player) sender).sendMessage(ChatColor.AQUA + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport"));
                         }
@@ -294,21 +294,21 @@ public class SubServersCMD implements CommandExecutor {
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Config-Error"));
                         }
-                    } else if (!(sender instanceof Player) || (((Player)sender).hasPermission("subserver.command.teleport." + args[1]) || ((Player)sender).hasPermission("subserver.command.teleport.*"))) {
+                    } else if ((sender instanceof Player) && (!((Player) sender).hasPermission("subserver.command.teleport." + args[1])) && (!((Player) sender).hasPermission("subserver.command.teleport.*"))) {
                         if (sender instanceof Player) {
-                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
+                            ((Player) sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Permission-Error"));
                         }
-                    } else if (!(SubAPI.getSubServer(args[1]).isRunning() || args[1].equalsIgnoreCase("~Lobby"))) {
+                    } else if (!args[1].equalsIgnoreCase("~Lobby") && !(SubAPI.getSubServer(args[1]).isRunning())) {
                         if (sender instanceof Player) {
-                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
+                            ((Player) sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Offline-Error"));
                         }
                     } else if (!SubAPI.getSubServer("~Proxy").isRunning()) {
                         if (sender instanceof Player) {
-                            ((Player)sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
+                            ((Player) sender).sendMessage(ChatColor.RED + Main.lprefix + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
                         } else {
                             Bukkit.getLogger().info(String.valueOf(Main.lprefix) + Main.lang.getString("Lang.Commands.Teleport-Proxy-Error"));
                         }

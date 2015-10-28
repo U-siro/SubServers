@@ -9,9 +9,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
+import net.ME1312.SubServer.SubAPI;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import net.ME1312.SubServer.API;
 import net.ME1312.SubServer.Main;
 import net.ME1312.SubServer.Libraries.Events.SubEvent;
 import org.spongepowered.api.entity.living.player.Player;
@@ -141,7 +141,7 @@ public class SubServer implements Serializable {
 									}
 									for(Iterator<String> str = Main.SubServers.iterator(); str.hasNext(); ) {
 										String item = str.next();
-										sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + API.getSubServer(item).Port + " " + API.getSubServer(item).SharedChat);
+										sendCommandSilently("subconf@proxy addserver " + item + " " + Main.config.getNode("Settings", "Server-IP").getString() + " " + SubAPI.getSubServer(item).Port + " " + SubAPI.getSubServer(item).SharedChat);
 										try {
 											Thread.sleep(500);
 										} catch (InterruptedException e) {
@@ -152,7 +152,7 @@ public class SubServer implements Serializable {
 							}).submit(Main.Plugin);
 							try {
 								Process.waitFor();
-								API.executeEvent(SubEvent.Events.SubShellExitEvent, Server);
+								SubAPI.executeEvent(SubEvent.Events.SubShellExitEvent, Server);
 							} catch (InterruptedException e) {
 								Main.log.error(e.getStackTrace().toString());
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
@@ -213,7 +213,7 @@ public class SubServer implements Serializable {
 							}
 							try {
 								Process.waitFor();
-								API.executeEvent(SubEvent.Events.SubShellExitEvent, Server);
+								SubAPI.executeEvent(SubEvent.Events.SubShellExitEvent, Server);
 							} catch (InterruptedException e) {
 								Main.log.error(e.getStackTrace().toString());
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
@@ -257,7 +257,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean start() {
 		try {
-			if (API.executeEvent(SubEvent.Events.SubStartEvent, this, null)) {
+			if (SubAPI.executeEvent(SubEvent.Events.SubStartEvent, this, null)) {
 				start(true);
 				return true;
 			} else {
@@ -276,7 +276,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean start(final Player sender) {
 		try {
-			if (API.executeEvent(SubEvent.Events.SubStartEvent, this, sender)) {
+			if (SubAPI.executeEvent(SubEvent.Events.SubStartEvent, this, sender)) {
 				start(true);
 				return true;
 			} else {
@@ -294,7 +294,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean sendCommand(String cmd) {
 		try {
-			if (API.executeEvent(SubEvent.Events.SubRunCommandEvent, this, null, cmd)) {
+			if (SubAPI.executeEvent(SubEvent.Events.SubRunCommandEvent, this, null, cmd)) {
 				StdIn = cmd;
 				return true;
 			} else {
@@ -313,7 +313,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean sendCommand(Player sender, String cmd) {
 		try {
-			if (API.executeEvent(SubEvent.Events.SubRunCommandEvent, this, sender, cmd)) {
+			if (SubAPI.executeEvent(SubEvent.Events.SubRunCommandEvent, this, sender, cmd)) {
 				StdIn = cmd;
 				return true;
 			} else {
@@ -338,7 +338,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean stop() {
 		try {
-			if (API.executeEvent(SubEvent.Events.SubStopEvent, this, null)) {
+			if (SubAPI.executeEvent(SubEvent.Events.SubStopEvent, this, null)) {
 				if (Name.equalsIgnoreCase("~Proxy")) {
 					StdIn = "end";
 				} else {
@@ -360,7 +360,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean stop(Player sender) {
 		try {
-			if (API.executeEvent(SubEvent.Events.SubStopEvent, this, sender)) {
+			if (SubAPI.executeEvent(SubEvent.Events.SubStopEvent, this, sender)) {
 				if (Name.equalsIgnoreCase("~Proxy")) {
 					StdIn = "end";
 				} else {
@@ -381,7 +381,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean terminate() {
 		try {
-			if (API.executeEvent(SubEvent.Events.SubStopEvent, this, null)) {
+			if (SubAPI.executeEvent(SubEvent.Events.SubStopEvent, this, null)) {
 				Process.destroy();
 				return true;
 			} else {
@@ -399,7 +399,7 @@ public class SubServer implements Serializable {
 	 */
 	public boolean terminate(Player sender) {
 		try {
-			if (API.executeEvent(SubEvent.Events.SubStopEvent, this, sender)) {
+			if (SubAPI.executeEvent(SubEvent.Events.SubStopEvent, this, sender)) {
 				Process.destroy();
 				return true;
 			} else {
@@ -417,8 +417,8 @@ public class SubServer implements Serializable {
 	 * @param player
 	 */
 	public void sendPlayer(Player player) {
-		if (API.getSubServer(0).isRunning()) {
-			API.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + player.getName() + " " + Name);
+		if (SubAPI.getSubServer(0).isRunning()) {
+			SubAPI.getSubServer("~Proxy").sendCommandSilently("subconf@proxy sendplayer " + player.getName() + " " + Name);
 		}
 	}
 	
