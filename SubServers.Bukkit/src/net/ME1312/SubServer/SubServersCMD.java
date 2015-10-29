@@ -465,7 +465,7 @@ public class SubServersCMD implements CommandExecutor {
                         Bukkit.getLogger().info(str.next());
                     }
 				}
-			} else if (((Player) sender).hasPermission("SubServer.Command") && Main.config.getBoolean("Settings.GUI.Enabled") && (sender instanceof Player)) {
+			} else if ((sender instanceof Player) && ((Player) sender).hasPermission("SubServer.Command") && Main.config.getBoolean("Settings.GUI.Enabled")) {
 				if (Main.SubServers.contains(args[0])) {
 					new GUI((Player) sender, 0, args[0], Main);
 				} else {

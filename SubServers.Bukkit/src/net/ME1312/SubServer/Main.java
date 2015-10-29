@@ -57,7 +57,13 @@ public class Main {
         new SubAPI(this);
 
         PluginVersion = new Version(Plugin.getDescription().getVersion());
-        MCVersion = new Version(Bukkit.getServer().getVersion().split("\\(MC\\: ")[1].split("\\)")[0]);
+        try {
+            MCVersion = new Version(Bukkit.getServer().getVersion().split("\\(MC\\: ")[1].split("\\)")[0]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Bukkit.getLogger().warning(lprefix + "Problem grabbing Minecraft Version!");
+            Bukkit.getLogger().warning(lprefix + "Assuming 1.8");
+            MCVersion = new Version("1.8");
+        }
 
         Bukkit.getLogger().info(lprefix + "Loading Libraries for " + MCVersion);
 

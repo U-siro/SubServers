@@ -286,16 +286,10 @@ public class SubServerCreator {
 
                         if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
                             String GitBash = new File(new File(Main.config.getNode("Settings", "Server-Creation", "git-dir").getString()), "bin" + File.separatorChar + "bash.exe").getAbsolutePath();
-                            Process Process1 = Runtime.getRuntime().exec(GitBash + " --login -i -c \"curl -o build-subserver.sh http://minecraft.ME1312.net/lib/subservers/1.8.8e/build-subserver.sh\"", null, Dir);
-                            try {
-                                Process1.waitFor();
-                                Thread.sleep(1500);
-                            } catch (InterruptedException e) {
-                                Main.log.error(e.getStackTrace().toString());
-                            }
+                            Main.copyFromJar("build-subserver.sh", new File(Dir, "build-subserver.sh").getPath());
 
                             if (!(new File(Dir, "build-subserver.sh").exists())) {
-                                Main.log.info("Problem Downloading Server Build Script from ME1312.net. Is it Down?");
+                                Main.log.info("Problem Copying Script!");
                             } else {
                                 Process = Runtime.getRuntime().exec(GitBash + " --login -i -c \"bash build-subserver.sh " + Version.toString() + " " + Type.toString() + "\"", null, Dir);
                                 StreamGobbler read = new StreamGobbler(Process.getInputStream(), "OUTPUT", Main.config.getNode("Settings", "Server-Creation", "log").getBoolean(), Main.lang.getNode("Lang", "Create-Server", "Log-Prefix").getString() + Name, Main);
@@ -331,16 +325,10 @@ public class SubServerCreator {
                                 }
                             }
                         } else {
-                            Process Process1 = Runtime.getRuntime().exec("curl -o build-subserver.sh http://minecraft.ME1312.net/lib/subservers/1.8.8e/build-subserver.sh", null, Dir);
-                            try {
-                                Process1.waitFor();
-                                Thread.sleep(1500);
-                            } catch (InterruptedException e) {
-                                Main.log.error(e.getStackTrace().toString());
-                            }
+                            Main.copyFromJar("build-subserver.sh", new File(Dir, "build-subserver.sh").getPath());
 
                             if (!(new File(Dir, "build-subserver.sh").exists())) {
-                                Main.log.error("Problem Downloading Server Build Script from ME1312.net. Is it Down?");
+                                Main.log.error("Problem Copying Script!");
                             } else {
                                 Process Process2 = Runtime.getRuntime().exec("chmod +x build-subserver.sh", null, Dir);
                                 try {

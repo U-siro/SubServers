@@ -29,7 +29,7 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.command.args.GenericArguments;
 import org.spongepowered.api.util.command.spec.CommandSpec;
 
-@Plugin(id="SubServers", name="SubServers", version="1.8.8n")
+@Plugin(id="SubServers", name="SubServers", version="1.8.8o")
 public class Main {
     public static SubServerCreator ServerCreator;
 
